@@ -1,7 +1,7 @@
 class Queue {
 
   constructor() {
-    this.subscribers = new Map()
+    this.subscribers = []
   }
 
   publish(event) {
@@ -9,22 +9,29 @@ class Queue {
     if (!eventType) {
       throw new Error('Events must have an "eventType" property')
     }
-    if (this.subscribers.has(eventType)) {
-      return callAllAsync(this.subscribers.get(eventType), event)
+    const applicableSubscribers = filterSubscribers(this.subscribers, event)
+    if (applicableSubscribers.length > 0) {
+      return callAllAsync(applicableSubscribers, event)
     }
     return Promise.resolve(true)
   }
 
-  subscribe(eventType, subscriber) {
-    const specificSubscribers = this.subscribers.get(eventType) || new Set()
-    specificSubscribers.add(subscriber)
-    this.subscribers.set(eventType, specificSubscribers)
-    return () => specificSubscribers.delete(subscriber)
+  subscribe(subscriberFunc, options = {}) {
+    const { filter } = options
+    const subscriber = { func: subscriberFunc, filter }
+    this.subscribers.push(subscriber)
+    return () => this.subscribers = this.subscribers.filter(s => s !== subscriber)
   }
 }
 
+function filterSubscribers(subscribers, event) {
+  return subscribers
+    .filter(subscriber => subscriber.filter ? subscriber.filter(event) : true)
+    .map(subscriber => subscriber.func)
+}
+
 function callAllAsync(funcs, argument) {
-  const asyncCalls = [...funcs].map(func => callAsync(func, argument))
+  const asyncCalls = funcs.map(func => callAsync(func, argument))
   return Promise.all(asyncCalls).then(() => true)
 }
 

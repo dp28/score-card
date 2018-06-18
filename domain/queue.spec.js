@@ -12,8 +12,8 @@ describe('a queue', () => {
       it('should call all subscribers and return a promise for them to have been called', async () => {
         let callCount = 0
         let buildSubscriber = () => () => callCount++
-        queue.subscribe('fake', buildSubscriber())
-        queue.subscribe('fake', buildSubscriber())
+        queue.subscribe(buildSubscriber())
+        queue.subscribe(buildSubscriber())
         await queue.publish({ eventType: 'fake' })
         expect(callCount).toBe(2)
       })
@@ -21,8 +21,8 @@ describe('a queue', () => {
       it('should call all them asynchronously', () => {
         let callCount = 0
         let buildSubscriber = () => () => callCount++
-        queue.subscribe('fake', buildSubscriber())
-        queue.subscribe('fake', buildSubscriber())
+        queue.subscribe(buildSubscriber())
+        queue.subscribe(buildSubscriber())
         queue.publish({ eventType: 'fake' })
         expect(callCount).toBe(0)
       })
@@ -37,13 +37,13 @@ describe('a queue', () => {
 
   describe('#subscribe', () => {
     it('should return a function', () => {
-      expect(queue.subscribe('fake', () => 'fail') instanceof Function).toBe(true)
+      expect(queue.subscribe(() => 'fail') instanceof Function).toBe(true)
     })
 
     describe('the returned function', () => {
       it('should cancel the subscription', async () => {
         let hasBeenCalled = false
-        const cancel = queue.subscribe('fake', () => hasBeenCalled = true)
+        const cancel = queue.subscribe(() => hasBeenCalled = true)
         cancel()
         await queue.publish({ eventType: 'fake' })
         expect(hasBeenCalled).toBe(false)
@@ -54,24 +54,27 @@ describe('a queue', () => {
       it('should be passed to the subscriber', async () => {
         const event = { eventType: 'fake', specific: 'data' }
         let arg = null
-        queue.subscribe('fake', event => arg = event)
+        queue.subscribe(event => arg = event)
         await queue.publish(event)
         expect(arg).toBe(event)
       })
 
-      describe('and is the correct type', () => {
+      describe('and is not filtered out', () => {
         it('should call the subscriber', async () => {
           let hasBeenCalled = false
-          queue.subscribe('fake', () => hasBeenCalled = true)
+          queue.subscribe(
+            () => hasBeenCalled = true,
+            { filter: event => event.eventType === 'fake' }
+          )
           await queue.publish({ eventType: 'fake' })
           expect(hasBeenCalled).toBe(true)
         })
       })
 
-      describe('and is not the correct type', () => {
+      describe('and is filtered out', () => {
         it('should not call the subscriber', async () => {
           let hasBeenCalled = false
-          queue.subscribe('fake', () => hasBeenCalled = true)
+          queue.subscribe(() => hasBeenCalled = true, { filter: () => false })
           await queue.publish({ eventType: 'still fake' })
           expect(hasBeenCalled).toBe(false)
         })
