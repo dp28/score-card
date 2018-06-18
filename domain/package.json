@@ -1,0 +1,14 @@
+{
+  "name": "score-card",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watchAll --notify"
+  },
+  "author": "Daniel Patterson <dan24patt@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^22.4.4"
+  }
+}
