@@ -1,4 +1,4 @@
-const { buildQueue } = require('./queue.js')
+const { buildQueue } = require('./queue')
 
 describe('a queue', () => {
   const queue = buildQueue()

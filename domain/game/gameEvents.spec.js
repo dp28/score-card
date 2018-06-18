@@ -1,13 +1,13 @@
 const {
-  createGame,
-  CREATE_GAME,
+  startGame,
+  START_GAME,
   addPlayerToGame,
   ADD_PLAYER,
   recordScore,
   RECORD_SCORE,
   removePlayer,
   REMOVE_PLAYER
-} = require('./gameEvents.js')
+} = require('./gameEvents')
 
 function itShouldBehaveLikeADomainEvent({ eventCreator, eventType, data }) {
   const event = eventCreator(data)
@@ -34,14 +34,14 @@ function isWithinOneSecondOfNow(date) {
     nowInMilliseconds <= dateInMilliseconds + SecondInMilliseconds
 }
 
-describe('createGame', () => {
+describe('startGame', () => {
   itShouldBehaveLikeADomainEvent({
-    eventCreator: createGame,
-    eventType: CREATE_GAME
+    eventCreator: startGame,
+    eventType: START_GAME
   })
 
   it('should generate the id of the game', () => {
-    expect(createGame().hasOwnProperty('gameId')).toBe(true)
+    expect(startGame().hasOwnProperty('gameId')).toBe(true)
   })
 })
 

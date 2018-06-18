@@ -1,13 +1,13 @@
 const { generateId } = require('../ids.js')
 
-const CREATE_GAME = 'GAMES.CREATE'
+const START_GAME = 'GAMES.START'
 const ADD_PLAYER = 'GAMES.PLAYERS.ADD'
 const REMOVE_PLAYER = 'GAMES.PLAYERS.REMOVE'
 const RECORD_SCORE = 'GAMES.SCORES.ADD'
 
-function createGame() {
+function startGame() {
   return {
-    ...buildEvent(CREATE_GAME),
+    ...buildEvent(START_GAME),
     gameId: generateId()
   }
 }
@@ -47,11 +47,11 @@ function buildEvent(eventType) {
 }
 
 module.exports = {
-  CREATE_GAME,
+  START_GAME,
   ADD_PLAYER,
   RECORD_SCORE,
   REMOVE_PLAYER,
-  createGame,
+  startGame,
   addPlayerToGame,
   recordScore,
   removePlayer

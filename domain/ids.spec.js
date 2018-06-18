@@ -1,4 +1,4 @@
-const { generateId } = require('./ids.js')
+const { generateId } = require('./ids')
 
 describe('generateId', () => {
   it('should return a string', () => {
