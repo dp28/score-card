@@ -43,7 +43,7 @@ describe('gameReducer', () => {
     })
   })
 
-  describe(`calling with a ${ADD_PLAYER} event`, () => {
+  describe(`calling with a ${START_GAME} event`, () => {
     it('should have state containing the gameId and startedAt from the event,' +
       ' no players, no totals, no rounds', () => {
       const event = startGame()

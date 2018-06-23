@@ -4,6 +4,7 @@ import {
   RECORD_SCORE,
   REMOVE_PLAYER
 } from './gameEvents.mjs'
+import { merge } from '../utils.mjs'
 
 const INITIAL_STATE = {
   id: undefined,
@@ -24,14 +25,18 @@ export function gameReducer(game = INITIAL_STATE, event) {
 }
 
 function recordScore(game, scoreEvent) {
-  return {
-    ...game,
-    totals: {
-      ...game.totals,
-      [scoreEvent.playerId]: game.totals[scoreEvent.playerId] + scoreEvent.score
-    },
-    rounds: addScoreToRounds(game.rounds, scoreEvent)
-  }
+  return merge(
+    game,
+    {
+      rounds: addScoreToRounds(game.rounds, scoreEvent),
+      totals: merge(
+        game.totals,
+        {
+          [scoreEvent.playerId]: game.totals[scoreEvent.playerId] + scoreEvent.score
+        }
+      ),
+    }
+  )
 }
 
 function addScoreToRounds(rounds, scoreEvent) {
@@ -56,45 +61,42 @@ function buildNewRound({ playerId, score }, index = 0) {
 }
 
 function addScoreToRound(round, { playerId, score }) {
-  return {
-    ...round,
-    scores: {
-      ...round.scores,
-      [playerId]: score
+  return merge(
+    round,
+    {
+      scores: merge(round.scores, { [playerId]: score })
     }
-  }
+  )
 }
 
 function addPlayer(game, { playerId, playerName }) {
-  return {
-    ...game,
-    players: {
-      ...game.players,
-      [playerId]: { id: playerId, name: playerName }
-    },
-    totals: {
-      ...game.totals,
-      [playerId]: 0
+  const player = { id: playerId, name: playerName }
+  return merge(
+    game,
+    {
+      players: merge(game.players, { [playerId]: player }),
+      totals: merge(game.totals, { [playerId]: 0 })
     }
-  }
+  )
 }
 
 function removePlayer(game, { playerId }) {
   const deletePlayerFromMap = deleteFromMap(playerId)
-  return {
+  return merge(
     ...game,
-    players: deletePlayerFromMap(game.players),
-    totals: deletePlayerFromMap(game.totals),
-    rounds: game.rounds.map(round => ({
-      ...round,
-      scores: deletePlayerFromMap(round.scores)
-    }))
-  }
+    {
+      players: deletePlayerFromMap(game.players),
+      totals: deletePlayerFromMap(game.totals),
+      rounds: game.rounds.map(round => (
+        merge(round, { scores: deletePlayerFromMap(round.scores) })
+      ))
+    }
+  )
 }
 
 function deleteFromMap(key) {
   return map => {
-    const copy = { ...map }
+    const copy = Object.assign({}, map)
     delete copy[key]
     return copy
   }
@@ -104,9 +106,5 @@ function startGame(game, { gameId, createdAt }) {
   if (Boolean(game.id)) {
     return game
   }
-  return {
-    ...INITIAL_STATE,
-    id: gameId,
-    startedAt: createdAt
-  }
+  return merge(INITIAL_STATE, { id: gameId, startedAt: createdAt })
 }
