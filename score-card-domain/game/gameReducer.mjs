@@ -15,7 +15,7 @@ const INITIAL_STATE = {
 }
 
 export function gameReducer(game = INITIAL_STATE, event) {
-  switch (event.eventType) {
+  switch (event.type) {
     case RECORD_SCORE: return recordScore(game, event)
     case ADD_PLAYER: return addPlayer(game, event)
     case START_GAME: return startGame(game, event)

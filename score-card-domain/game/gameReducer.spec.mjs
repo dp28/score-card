@@ -12,7 +12,7 @@ import {
 import { gameReducer } from './gameReducer.mjs'
 
 function buildStartedGame() {
-  const initialState = gameReducer(undefined, { eventType: undefined })
+  const initialState = gameReducer(undefined, { type: undefined })
   return gameReducer(initialState, startGame())
 }
 
@@ -27,13 +27,13 @@ describe('gameReducer', () => {
   describe('calling with an unknown event type', () => {
     it('should return the passed-in game state', () => {
       const state = { a: 1 }
-      expect(gameReducer(state, { eventType: 'fake' })).toBe(state)
+      expect(gameReducer(state, { type: 'fake' })).toBe(state)
     })
   })
 
   describe('calling without any game state', () => {
     it('should return a default unstarted game state', () => {
-      expect(gameReducer(undefined, { eventType: 'fake' })).toEqual({
+      expect(gameReducer(undefined, { type: 'fake' })).toEqual({
         id: undefined,
         startedAt: undefined,
         players: {},

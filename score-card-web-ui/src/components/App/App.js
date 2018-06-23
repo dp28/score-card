@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Button from '@material-ui/core/Button';
+
+import { ConnectedStartGame } from '../StartGame/StartGame'
 
 export const App = () => (
-  <Button variant="contained" color="primary">
-    Start game
-  </Button>
+  <ConnectedStartGame />
 )

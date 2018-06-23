@@ -35,9 +35,9 @@ export function removePlayer({ playerId, gameId }) {
   )
 }
 
-export function buildEvent(eventType) {
+export function buildEvent(type) {
   return {
-    eventType,
+    type,
     id: generateId(),
     createdAt: new Date()
   }

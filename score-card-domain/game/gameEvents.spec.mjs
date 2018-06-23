@@ -9,11 +9,11 @@ import {
   REMOVE_PLAYER
 } from './gameEvents.mjs'
 
-function itShouldBehaveLikeADomainEvent({ eventCreator, eventType, data }) {
+function itShouldBehaveLikeADomainEvent({ eventCreator, type, data }) {
   const event = eventCreator(data)
 
-  it(`should return an event with the type "${eventType}"`, () => {
-    expect(event.eventType).toBe(eventType)
+  it(`should return an event with the type "${type}"`, () => {
+    expect(event.type).toBe(type)
   })
 
   it('should have its own id', () => {
@@ -37,7 +37,7 @@ function isWithinOneSecondOfNow(date) {
 describe('startGame', () => {
   itShouldBehaveLikeADomainEvent({
     eventCreator: startGame,
-    eventType: START_GAME
+    type: START_GAME
   })
 
   it('should generate the id of the game', () => {
@@ -53,7 +53,7 @@ describe('addPlayerToGame', () => {
 
   itShouldBehaveLikeADomainEvent({
     eventCreator: addPlayerToGame,
-    eventType: ADD_PLAYER,
+    type: ADD_PLAYER,
     data: { playerName, gameId }
   })
 
@@ -79,7 +79,7 @@ describe('recordScore', () => {
 
   itShouldBehaveLikeADomainEvent({
     eventCreator: recordScore,
-    eventType: RECORD_SCORE,
+    type: RECORD_SCORE,
     data: { score, playerId, gameId }
   })
 
@@ -104,7 +104,7 @@ describe('removePlayer', () => {
 
   itShouldBehaveLikeADomainEvent({
     eventCreator: removePlayer,
-    eventType: REMOVE_PLAYER,
+    type: REMOVE_PLAYER,
     data: { playerId, gameId }
   })
 
