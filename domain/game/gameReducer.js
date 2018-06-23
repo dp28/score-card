@@ -5,29 +5,21 @@ const {
   REMOVE_PLAYER
 } = require('./gameEvents')
 
-class GameAggregator {
-
-  constructor(createGameEvent) {
-    this.game = gameReducer({}, createGameEvent)
-  }
-
-  update(event) {
-    this.game = gameReducer(this.game, event)
-  }
-
-  get state() {
-    return this.game
-  }
-
+const INITIAL_STATE = {
+  id: undefined,
+  startedAt: undefined,
+  players: {},
+  totals: {},
+  rounds: []
 }
 
-function gameReducer(game, event) {
+function gameReducer(game = INITIAL_STATE, event) {
   switch (event.eventType) {
     case RECORD_SCORE: return recordScore(game, event)
     case ADD_PLAYER: return addPlayer(game, event)
-    case START_GAME: return buildInitialGameState(event.gameId, event.createdAt)
+    case START_GAME: return startGame(game, event)
     case REMOVE_PLAYER: return removePlayer(game, event)
-    default: throw new Error(`Cannot update error from event type "${event.eventType}"`)
+    default: return game
   }
 }
 
@@ -108,23 +100,17 @@ function deleteFromMap(key) {
   }
 }
 
-function buildInitialGameState(id, startedAt) {
+function startGame(game, { gameId, createdAt }) {
+  if (Boolean(game.id)) {
+    return game
+  }
   return {
-    id,
-    startedAt,
-    players: {},
-    totals: {},
-    rounds: []
+    ...INITIAL_STATE,
+    id: gameId,
+    startedAt: createdAt
   }
-}
-
-function buildGameAggregator(createGameEvent) {
-  if (createGameEvent.eventType !== START_GAME) {
-    throw new Error(`Cannot build game without "${START_GAME}" event type`)
-  }
-  return new GameAggregator(createGameEvent)
 }
 
 module.exports = {
-  buildGameAggregator
+  gameReducer
 }
