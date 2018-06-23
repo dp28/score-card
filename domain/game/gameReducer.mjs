@@ -1,9 +1,9 @@
-const {
+import {
   START_GAME,
   ADD_PLAYER,
   RECORD_SCORE,
   REMOVE_PLAYER
-} = require('./gameEvents')
+} from './gameEvents.mjs'
 
 const INITIAL_STATE = {
   id: undefined,
@@ -13,7 +13,7 @@ const INITIAL_STATE = {
   rounds: []
 }
 
-function gameReducer(game = INITIAL_STATE, event) {
+export function gameReducer(game = INITIAL_STATE, event) {
   switch (event.eventType) {
     case RECORD_SCORE: return recordScore(game, event)
     case ADD_PLAYER: return addPlayer(game, event)
@@ -109,8 +109,4 @@ function startGame(game, { gameId, createdAt }) {
     id: gameId,
     startedAt: createdAt
   }
-}
-
-module.exports = {
-  gameReducer
 }

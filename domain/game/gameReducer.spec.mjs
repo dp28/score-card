@@ -1,4 +1,4 @@
-const {
+import {
   startGame,
   START_GAME,
   addPlayerToGame,
@@ -7,9 +7,9 @@ const {
   RECORD_SCORE,
   removePlayer,
   REMOVE_PLAYER
-} = require('./gameEvents')
+} from './gameEvents.mjs'
 
-const { gameReducer } = require('./gameReducer')
+import { gameReducer } from './gameReducer.mjs'
 
 function buildStartedGame() {
   const initialState = gameReducer(undefined, { eventType: undefined })

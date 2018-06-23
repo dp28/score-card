@@ -1,4 +1,4 @@
-const {
+import {
   startGame,
   START_GAME,
   addPlayerToGame,
@@ -7,7 +7,7 @@ const {
   RECORD_SCORE,
   removePlayer,
   REMOVE_PLAYER
-} = require('./gameEvents')
+} from './gameEvents.mjs'
 
 function itShouldBehaveLikeADomainEvent({ eventCreator, eventType, data }) {
   const event = eventCreator(data)

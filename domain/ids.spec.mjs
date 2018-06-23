@@ -1,4 +1,4 @@
-const { generateId } = require('./ids')
+import { generateId } from './ids.mjs'
 
 describe('generateId', () => {
   it('should return a string', () => {
