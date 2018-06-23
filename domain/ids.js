@@ -1,5 +1,7 @@
+const { hri: ReadableIds } = require('human-readable-ids')
+
 function generateId() {
-  return new String(Math.random())
+  return ReadableIds.random()
 }
 
 module.exports = {
