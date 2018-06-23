@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux'
 
@@ -17,4 +16,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export const ConnectedStartGame = connect(null, mapDispatchToProps)(StartGame) 
+export const ConnectedStartGame = connect(null, mapDispatchToProps)(StartGame)
