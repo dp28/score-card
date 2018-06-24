@@ -2,10 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux'
 
 import { ConnectedStartGame } from '../StartGame/StartGame'
-import { ConnectedNewPlayer } from '../NewPlayer/NewPlayer'
+import { ConnectedPlayers } from '../Players/Players'
 
 export const App = ({ hasStarted }) => (
-  hasStarted ? <ConnectedNewPlayer /> : <ConnectedStartGame />
+  hasStarted ? <ConnectedPlayers /> : <ConnectedStartGame />
 )
 
 function mapStateToProps({ id }) {
