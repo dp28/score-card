@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { ConnectedStartGame } from '../StartGame/StartGame'
 import { ConnectedPlayers } from '../Players/Players'
 
-const appPadding = 20;
+const appPadding = 10;
 
 const styles = {
   app: {
