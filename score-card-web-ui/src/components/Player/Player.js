@@ -1,9 +1,14 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
+
+import { recordScore } from 'score-card-domain'
 
 const styles = {
   player: {
@@ -18,24 +23,56 @@ const styles = {
     top: 0,
     fontSize: 20,
   },
+  nextScore: {
+    marginRight: 10,
+    width: 100,
+    marginTop: 0,
+  }
 };
 
-export const Player = ({ player, total, classes }) => {
+export const Player = ({ player, total, gameId, updateScore, classes }) => {
   return (
     <Card>
-      <CardContent><div className={classes.player}>
-        <Typography className={classes.title}>{player.name}</Typography>
-        <Typography className={classes.total}>{total}</Typography></div>
+      <CardContent>
+        <div className={classes.player}>
+          <Typography className={classes.title}>{player.name}</Typography>
+          <Typography className={classes.total}>{total}</Typography>
+        </div>
+        <form onSubmit={updateScore(player.id, gameId)}>
+          <TextField
+            id={`${player.id}_nextScore`}
+            className={classes.nextScore}
+            label="Next score"
+            type="number"
+            margin="normal"
+          />
+          <Button type="submit" variant="fab" mini>+</Button>
+        </form>
       </CardContent>
     </Card>
   )
 }
 
-function mapStateToProps({ players, totals }, { id }) {
+function mapStateToProps({ players, totals, gameId }, { id }) {
   return {
     player: players[id],
-    total: totals[id]
+    total: totals[id],
+    gameId
   }
 }
 
-export const ConnectedPlayer = connect(mapStateToProps)(withStyles(styles)(Player));
+function mapDispatchToProps(dispatch) {
+  return {
+    updateScore: (playerId, gameId) => event => {
+      event.preventDefault();
+      const scoreField = event.target[`${playerId}_nextScore`];
+      const score = Number(scoreField.value);
+      scoreField.value = ""
+      dispatch(recordScore({ score, gameId, playerId }));
+    }
+  }
+}
+
+export const ConnectedPlayer = connect(
+  mapStateToProps, mapDispatchToProps
+)(withStyles(styles)(Player));
