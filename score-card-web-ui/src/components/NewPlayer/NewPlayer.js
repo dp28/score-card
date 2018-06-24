@@ -1,4 +1,5 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -8,13 +9,20 @@ import { connect } from 'react-redux'
 
 import { addPlayerToGame } from 'score-card-domain'
 
-export const NewPlayer = ({ addPlayer, gameId }) => {
+const styles = {
+  textField: {
+    width: "100%"
+  }
+}
+
+export const NewPlayer = ({ addPlayer, gameId, classes }) => {
   const addPlayerToCurrentGame = addPlayer(gameId)
   return (
     <form onSubmit={addPlayerToCurrentGame}>
       <Card>
         <CardContent>
           <TextField
+            className={classes.textField}
             id="playerNameField"
             label="Add player"
             margin="normal"
@@ -44,4 +52,6 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export const ConnectedNewPlayer = connect(mapStateToProps, mapDispatchToProps)(NewPlayer);
+export const ConnectedNewPlayer = connect(
+  mapStateToProps, mapDispatchToProps
+)(withStyles(styles)(NewPlayer));
