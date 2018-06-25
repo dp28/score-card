@@ -14,7 +14,7 @@ function fetchGameForClient(gameId, clientId) {
     };
     console.log(`New game (id: ${gameId}) - now ${Object.keys(games).length}`);
   }
-  
+
   const game = games[gameId];
 
   if (!game.clientIds.includes(clientId)) {
@@ -41,7 +41,6 @@ app.ws('/', websocketConnection => {
         clients[clientId].connection.send(rawMessage);
       }
     })
-    websocketConnection.send(`broadcasted to ${game.clientIds.length - 1} other clients`);
   });
 
   websocketConnection.on('close', () => {
