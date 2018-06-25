@@ -52,11 +52,11 @@ export const Player = ({ player, total, gameId, updateScore, classes }) => {
   )
 }
 
-function mapStateToProps({ players, totals, gameId }, { id }) {
+function mapStateToProps(game, { id }) {
   return {
-    player: players[id],
-    total: totals[id],
-    gameId
+    player: game.players[id],
+    total: game.totals[id],
+    gameId: game.id
   }
 }
 

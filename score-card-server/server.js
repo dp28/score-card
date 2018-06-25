@@ -10,7 +10,8 @@ const games = {};
 function fetchGameForClient(gameId, clientId) {
   if (!games.hasOwnProperty(gameId)) {
     games[gameId] = {
-      clientIds: [clientId]
+      clientIds: [clientId],
+      events: []
     };
     console.log(`New game (id: ${gameId}) - now ${Object.keys(games).length}`);
   }
@@ -19,6 +20,7 @@ function fetchGameForClient(gameId, clientId) {
 
   if (!game.clientIds.includes(clientId)) {
     game.clientIds.push(clientId);
+    game.events.forEach(event => clients[clientId].connection.send(JSON.stringify(event)));
   }
   return game;
 }
@@ -35,6 +37,8 @@ app.ws('/', websocketConnection => {
   websocketConnection.on('message', rawMessage => {
     const jsonMessage = JSON.parse(rawMessage);
     const game = fetchGameForClient(jsonMessage.gameId, id);
+
+    game.events.push(jsonMessage);
 
     game.clientIds.forEach(clientId => {
       if (clientId !== id && clients.hasOwnProperty(clientId)) {
