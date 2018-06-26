@@ -17,7 +17,29 @@
     "express": "^4.16.3"
   },
   "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-jest": "^23.2.0",
+    "babel-preset-env": "^1.7.0",
     "jest": "^23.2.0",
-    "nodemon": "^1.17.5"
+    "nodemon": "^1.17.5",
+    "regenerator-runtime": "^0.12.0"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.m?js$": "babel-jest"
+    },
+    "testMatch": [
+      "**/*.spec.mjs"
+    ],
+    "globals": {
+      "NODE_ENV": "test"
+    },
+    "moduleFileExtensions": [
+      "mjs",
+      "js"
+    ],
+    "moduleDirectories": [
+      "node_modules"
+    ]
   }
 }
