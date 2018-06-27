@@ -14,7 +14,7 @@ describe('ConnectionManager', () => {
     manager = new ConnectionManager();
   });
 
-describe('#registerConnection', () => {
+  describe('#registerConnection', () => {
     it('should return a string id', () => {
       expect(typeof manager.registerConnection(mockConnection())).toBe('string')
     });
