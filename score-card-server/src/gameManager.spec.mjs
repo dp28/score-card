@@ -3,6 +3,14 @@ import { GameManager } from './gameManager.mjs';
 let manager;
 let sendToConnection;
 
+function findMessagesSentTo(connectionId) {
+  return sendToConnection
+    .mock
+    .calls
+    .filter(args => args[0] == connectionId)
+    .map(args => args[1]);
+}
+
 describe('GameManager', () => {
   beforeEach(() => {
     sendToConnection = jest.fn()
@@ -33,11 +41,16 @@ describe('GameManager', () => {
         manager.addGameEvent(firstEvent, senderId);
       });
 
-      describe('and another event is added for the same game', () => {
+      describe('and another event is added by the same connection for the same game', () => {
         it('does not add a new game', () => {
           const originalGameCount = manager.getGameCount();
-          manager.addGameEvent({ gameId }, 'b');
+          manager.addGameEvent({ gameId, data: 2 }, senderId);
           expect(manager.getGameCount() - originalGameCount).toBe(0);
+        });
+
+        it('does not send any messages to the connection', () => {
+          manager.addGameEvent({ gameId, data: 2 }, senderId);
+          expect(findMessagesSentTo(senderId).length).toBe(0);
         });
       });
 
@@ -46,14 +59,6 @@ describe('GameManager', () => {
         const secondEvent = { gameId , data: 1 };
 
         beforeEach(() => manager.addGameEvent(secondEvent, otherSenderId));
-
-        function findMessagesSentTo(connectionId) {
-          return sendToConnection
-            .mock
-            .calls
-            .filter(args => args[0] == connectionId)
-            .map(args => args[1]);
-        }
 
         it('sends the event to earlier connections that have sent events for the game', () => {
           const firstConnectionMessages = findMessagesSentTo(senderId);

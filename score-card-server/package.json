@@ -2,9 +2,9 @@
   "name": "score-card-server",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "src/server.mjs",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon --exec npx babel-node -- src/server.mjs",
     "test": "jest --watchAll --notify"
   },
   "repository": {
@@ -14,9 +14,11 @@
   "author": "Daniel Patterson <dan24patt@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "express-ws": "^4.0.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-jest": "^23.2.0",
     "babel-preset-env": "^1.7.0",

@@ -34,8 +34,10 @@ export class GameManager {
   }
 
   _subscribeConnectionToGame(connectionId, game) {
-    game.connectionIds.add(connectionId);
-    game.events.forEach(event => this.sendToConnection(connectionId, event));
+    if (!game.connectionIds.has(connectionId)) {
+      game.connectionIds.add(connectionId);
+      game.events.forEach(event => this.sendToConnection(connectionId, event));
+    }
   }
 
   _broadcastEvent(gameEvent, game, senderConnectionId) {
