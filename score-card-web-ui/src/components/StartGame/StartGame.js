@@ -1,6 +1,7 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
 import { startGame } from 'score-card-domain'
 
@@ -10,10 +11,16 @@ export const StartGame = ({ dispatchStartGame }) => (
   </Button>
 )
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, { history }) {
   return {
-    dispatchStartGame: () => dispatch(startGame())
+    dispatchStartGame: () => {
+      const event = startGame()
+      dispatch(event)
+      history.push(`/games/${event.gameId}`)
+    }
   }
 }
 
-export const ConnectedStartGame = connect(null, mapDispatchToProps)(StartGame)
+export const ConnectedStartGame = withRouter(
+  connect(null, mapDispatchToProps)(StartGame)
+)

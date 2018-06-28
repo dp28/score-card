@@ -3,6 +3,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import { connect } from 'react-redux'
+import { Route } from 'react-router'
+import { BrowserRouter } from 'react-router-dom'
 
 import { ConnectedStartGame } from '../StartGame/StartGame'
 import { ConnectedPlayers } from '../Players/Players'
@@ -28,12 +30,16 @@ const styles = {
 }
 
 export const App = ({ hasStarted, classes }) => (
-  <div className={classes.app}>
-    <Paper className={classes.content}>
-      <Typography className={classes.title}>Score Card</Typography>
-      { hasStarted ? <ConnectedPlayers /> : <ConnectedStartGame /> }
-    </Paper>
-  </div>
+  <BrowserRouter>
+    <div className={classes.app}>
+      <Paper className={classes.content}>
+        <Typography className={classes.title}>Score Card</Typography>
+
+        <Route exact path="/" component={ConnectedStartGame}/>
+        <Route path="/games/:gameId" component={ConnectedPlayers}/>
+      </Paper>
+    </div>
+  </BrowserRouter>
 )
 
 function mapStateToProps({ id }) {
