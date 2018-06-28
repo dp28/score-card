@@ -6,10 +6,12 @@ import {
   recordScore,
   RECORD_SCORE,
   removePlayer,
-  REMOVE_PLAYER
+  REMOVE_PLAYER,
+  joinGame,
+  JOIN_GAME
 } from './gameEvents.mjs'
 
-function itShouldBehaveLikeADomainEvent({ eventCreator, type, data }) {
+function itShouldBehaveLikeAGameEvent({ eventCreator, type, data }) {
   const event = eventCreator(data)
 
   it(`should return an event with the type "${type}"`, () => {
@@ -23,6 +25,10 @@ function itShouldBehaveLikeADomainEvent({ eventCreator, type, data }) {
   it('should have an accurate timestamp as its createdAt', () => {
     expect(isWithinOneSecondOfNow(eventCreator(data).createdAt)).toBe(true)
   })
+
+  it('should have a gameId', () => {
+    expect(eventCreator(data).hasOwnProperty('gameId')).toBe(true)
+  })
 }
 
 const SecondInMilliseconds = 1000
@@ -35,7 +41,7 @@ function isWithinOneSecondOfNow(date) {
 }
 
 describe('startGame', () => {
-  itShouldBehaveLikeADomainEvent({
+  itShouldBehaveLikeAGameEvent({
     eventCreator: startGame,
     type: START_GAME
   })
@@ -51,7 +57,7 @@ describe('addPlayerToGame', () => {
 
   const event = addPlayerToGame({ playerName, gameId })
 
-  itShouldBehaveLikeADomainEvent({
+  itShouldBehaveLikeAGameEvent({
     eventCreator: addPlayerToGame,
     type: ADD_PLAYER,
     data: { playerName, gameId }
@@ -77,7 +83,7 @@ describe('recordScore', () => {
 
   const event = recordScore({ score, playerId, gameId })
 
-  itShouldBehaveLikeADomainEvent({
+  itShouldBehaveLikeAGameEvent({
     eventCreator: recordScore,
     type: RECORD_SCORE,
     data: { score, playerId, gameId }
@@ -102,7 +108,7 @@ describe('removePlayer', () => {
 
   const event = removePlayer({ playerId, gameId })
 
-  itShouldBehaveLikeADomainEvent({
+  itShouldBehaveLikeAGameEvent({
     eventCreator: removePlayer,
     type: REMOVE_PLAYER,
     data: { playerId, gameId }
@@ -114,5 +120,18 @@ describe('removePlayer', () => {
 
   it('should include the id of the game', () => {
     expect(event.gameId).toBe(gameId)
+  })
+})
+
+describe('joinGame', () => {
+  const gameId = 'game-id'
+  const playerId = 'player-id'
+
+  const event = joinGame({ gameId })
+
+  itShouldBehaveLikeAGameEvent({
+    eventCreator: joinGame,
+    type: JOIN_GAME,
+    data: { gameId }
   })
 })

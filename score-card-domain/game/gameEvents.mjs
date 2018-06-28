@@ -5,6 +5,7 @@ export const START_GAME = 'GAMES.START'
 export const ADD_PLAYER = 'GAMES.PLAYERS.ADD'
 export const REMOVE_PLAYER = 'GAMES.PLAYERS.REMOVE'
 export const RECORD_SCORE = 'GAMES.SCORES.ADD'
+export const JOIN_GAME = 'GAMES.JOIN'
 
 export function startGame() {
   return merge(buildEvent(START_GAME), { gameId: generateId() })
@@ -33,6 +34,10 @@ export function removePlayer({ playerId, gameId }) {
     buildEvent(REMOVE_PLAYER),
     { gameId, playerId }
   )
+}
+
+export function joinGame({ gameId }) {
+  return merge(buildEvent(JOIN_GAME), { gameId })
 }
 
 export function buildEvent(type) {

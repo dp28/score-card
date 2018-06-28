@@ -6,7 +6,9 @@ import {
   recordScore,
   RECORD_SCORE,
   removePlayer,
-  REMOVE_PLAYER
+  REMOVE_PLAYER,
+  joinGame,
+  JOIN_GAME
 } from './gameEvents.mjs'
 
 import { gameReducer } from './gameReducer.mjs'
@@ -60,6 +62,43 @@ describe('gameReducer', () => {
       it('should not change the game', () => {
         const { game } = buildStartedGameWithPlayer()
         const updatedGame = gameReducer(game, startGame())
+        expect(updatedGame).toBe(game)
+      })
+
+      describe('which has been joined but not started (has no startedAt)', () => {
+        it('should add the createdAt from the start event', () => {
+          const game = gameReducer(undefined, joinGame({ gameId: 'bla' }))
+          const startEvent = startGame()
+          const updatedGame = gameReducer(game, startEvent)
+          expect(updatedGame).toEqual({
+            id: 'bla',
+            startedAt: startEvent.createdAt,
+            players: {},
+            totals: {},
+            rounds: []
+          })
+        })
+      })
+    })
+  })
+
+  describe(`calling with a ${JOIN_GAME} event`, () => {
+    it('should have state containing the gameId from the event, but null' +
+      'startedAt, no players, no totals, no rounds', () => {
+      const event = joinGame({ gameId: 'bla' })
+      expect(gameReducer(undefined, event)).toEqual({
+        id: event.gameId,
+        startedAt: null,
+        players: {},
+        totals: {},
+        rounds: []
+      })
+    })
+
+    describe('if there is an existing game already', () => {
+      it('should not change the game', () => {
+        const { game } = buildStartedGameWithPlayer()
+        const updatedGame = gameReducer(game, joinGame({ gameId: game.id }))
         expect(updatedGame).toBe(game)
       })
     })

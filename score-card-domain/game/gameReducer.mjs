@@ -2,7 +2,8 @@ import {
   START_GAME,
   ADD_PLAYER,
   RECORD_SCORE,
-  REMOVE_PLAYER
+  REMOVE_PLAYER,
+  JOIN_GAME
 } from './gameEvents.mjs'
 import { merge } from '../utils.mjs'
 
@@ -19,6 +20,7 @@ export function gameReducer(game = INITIAL_STATE, event) {
     case RECORD_SCORE: return recordScore(game, event)
     case ADD_PLAYER: return addPlayer(game, event)
     case START_GAME: return startGame(game, event)
+    case JOIN_GAME: return joinGame(game, event)
     case REMOVE_PLAYER: return removePlayer(game, event)
     default: return game
   }
@@ -103,8 +105,17 @@ function deleteFromMap(key) {
 }
 
 function startGame(game, { gameId, createdAt }) {
+  if (Boolean(game.startedAt)) {
+    return game
+  } else if (Boolean(game.id)) {
+    return merge(game, { startedAt: createdAt })
+  }
+  return merge(INITIAL_STATE, { id: gameId, startedAt: createdAt })
+}
+
+function joinGame(game, { gameId }) {
   if (Boolean(game.id)) {
     return game
   }
-  return merge(INITIAL_STATE, { id: gameId, startedAt: createdAt })
+  return merge(game, { id: gameId, startedAt: null })
 }
