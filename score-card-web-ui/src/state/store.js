@@ -1,12 +1,19 @@
 import { createStore, applyMiddleware, compose } from 'redux'
 import { reducer } from 'score-card-domain'
 
-import { broadcastEventsMiddleware, setupBroadcastsAsInput } from '../websockets'
+import { websocketURL } from '../config.json'
+import { ServerConnection } from '../communication/serverConnection'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-export const store = createStore(reducer, composeEnhancers(
-  applyMiddleware(broadcastEventsMiddleware)
-));
+function communicationMiddleware(store) {
+  const connection = new ServerConnection(websocketURL, store.dispatch.bind(store))
+  return next => event => {
+    connection.sendMessage(event)
+    next(event)
+  }
+}
 
-setupBroadcastsAsInput(store)
+export const store = createStore(reducer, composeEnhancers(
+  applyMiddleware(communicationMiddleware)
+));
