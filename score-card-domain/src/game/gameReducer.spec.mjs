@@ -9,9 +9,9 @@ import {
   REMOVE_PLAYER,
   joinGame,
   JOIN_GAME
-} from './gameEvents.mjs'
+} from './gameEvents'
 
-import { gameReducer } from './gameReducer.mjs'
+import { gameReducer } from './gameReducer'
 
 function buildStartedGame() {
   const initialState = gameReducer(undefined, { type: undefined })

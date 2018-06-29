@@ -1,1 +1,1 @@
-export * from '../../score-card-domain/index.mjs'
+export * from '../../score-card-domain/src/index.mjs'

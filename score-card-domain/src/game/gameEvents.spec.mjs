@@ -9,7 +9,7 @@ import {
   REMOVE_PLAYER,
   joinGame,
   JOIN_GAME
-} from './gameEvents.mjs'
+} from './gameEvents'
 
 function itShouldBehaveLikeAGameEvent({ eventCreator, type, data }) {
   const event = eventCreator(data)

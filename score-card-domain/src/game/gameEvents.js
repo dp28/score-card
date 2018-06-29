@@ -1,5 +1,5 @@
-import { generateId } from '../ids.mjs'
-import { merge } from '../utils.mjs'
+import { generateId } from '../ids.js'
+import { merge } from '../utils.js'
 
 export const START_GAME = 'GAMES.START'
 export const ADD_PLAYER = 'GAMES.PLAYERS.ADD'

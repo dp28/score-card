@@ -1,4 +1,4 @@
-import { generateId } from './ids.mjs'
+import { generateId } from './ids'
 
 describe('generateId', () => {
   it('should return a string', () => {

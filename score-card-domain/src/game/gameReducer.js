@@ -4,8 +4,8 @@ import {
   RECORD_SCORE,
   REMOVE_PLAYER,
   JOIN_GAME
-} from './gameEvents.mjs'
-import { merge } from '../utils.mjs'
+} from './gameEvents'
+import { merge } from '../utils'
 
 const INITIAL_STATE = {
   id: undefined,
