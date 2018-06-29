@@ -17,7 +17,7 @@ describe('createEventRoute', () => {
   })
 
   it('should have a root path', () => {
-    expect(createEventRoute.path).toEqual('/api/createEvent')
+    expect(createEventRoute.path).toEqual('/api/events')
   })
 
   it('should have the name "createEvent"', () => {
@@ -59,7 +59,7 @@ describe('createEventRoute', () => {
         expect(response.status.mock.calls).toEqual([[400]])
       })
 
-      it('should replyan error message', () => {
+      it('should reply with an error message', () => {
         request.body = { bad: 'stuff' }
         response.status = jest.fn()
         response.status.mockReturnValue({ send: response.send })

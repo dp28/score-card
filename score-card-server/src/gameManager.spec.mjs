@@ -1,3 +1,5 @@
+import { reducer, joinGame, addPlayerToGame } from './score-card-domain.mjs'
+
 import { GameManager } from './gameManager.mjs';
 
 let manager;
@@ -93,4 +95,24 @@ describe('GameManager', () => {
       })
     });
   });
+
+  describe('#getCurrentGameState', () => {
+    describe('when no events have been added for that game id', () => {
+      it('should return null', () => {
+        expect(manager.getCurrentGameState('bla')).toBe(null)
+      })
+    })
+
+    describe('when events have been added for that game id', () => {
+      it('should return the result of reducing all of those events', () => {
+        const events = [
+          joinGame({ gameId: 'a' }),
+          addPlayerToGame({ gameId: 'a', playerName: 'Joe' })
+        ]
+        events.forEach(event => manager.addGameEvent(event))
+        const expected = events.reduce(reducer, undefined)
+        expect(manager.getCurrentGameState('a')).toEqual(expected)
+      })
+    })
+  })
 });

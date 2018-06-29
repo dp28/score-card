@@ -1,3 +1,5 @@
+import { reducer } from './score-card-domain.mjs'
+
 export class GameManager {
 
   constructor(sendToConnection) {
@@ -14,6 +16,14 @@ export class GameManager {
 
   getGameCount() {
     return this.gameMap.size
+  }
+
+  getCurrentGameState(gameId) {
+    if (this.gameMap.has(gameId)) {
+      const game = this.gameMap.get(gameId);
+      return game.events.reduce(reducer, undefined);
+    }
+    return null;
   }
 
   _fetchGame(gameId) {

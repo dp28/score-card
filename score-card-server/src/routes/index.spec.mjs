@@ -2,6 +2,7 @@ import { mountRoutes } from './index.mjs'
 import { buildWebsocketRootRoute } from './websocketRoot.mjs'
 import { buildHealthcheckRoute } from './healthcheck.mjs'
 import { buildCreateEventRoute } from './api/createEvent.mjs'
+import { buildShowGameRoute } from './api/showGame.mjs'
 
 describe('mountRoutes', () => {
   const connectionManager = null
@@ -19,7 +20,8 @@ describe('mountRoutes', () => {
   [
     buildWebsocketRootRoute,
     buildHealthcheckRoute,
-    buildCreateEventRoute
+    buildCreateEventRoute,
+    buildShowGameRoute
   ].forEach(builder => {
 
     const root = builder({ connectionManager, gameManager })

@@ -23,7 +23,9 @@
     "transform": {
       "^.+\\.m?js$": "babel-jest"
     },
-    "testMatch": ["**/*.spec.mjs"],
+    "testMatch": [
+      "**/*.spec.mjs"
+    ],
     "globals": {
       "NODE_ENV": "test"
     },

@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/server.mjs",
   "scripts": {
-    "start": "nodemon --exec npx babel-node -- src/server.mjs",
+    "start": "nodemon --exec npx babel-node --ignore '/node_modules/(?!score-card-domain)' -- src/server.mjs",
     "test": "jest --watchAll --notify"
   },
   "repository": {
