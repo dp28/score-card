@@ -15,11 +15,10 @@ const styles = {
 }
 
 export const NewPlayer = ({ addPlayer, gameId, classes }) => {
-  const addPlayerToCurrentGame = addPlayer(gameId)
   return (
       <Card>
         <CardContent>
-          <form onSubmit={addPlayerToCurrentGame}>
+          <form onSubmit={addPlayer}>
             <TextField
               className={classes.textField}
               id="playerNameField"
@@ -33,13 +32,9 @@ export const NewPlayer = ({ addPlayer, gameId, classes }) => {
   )
 }
 
-function mapStateToProps({ id }) {
-  return { gameId: id }
-}
-
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, { gameId }) {
   return {
-    addPlayer: gameId => event => {
+    addPlayer: event => {
       event.preventDefault();
       const playerNameField = event.target.playerNameField;
       const playerName = playerNameField.value;
@@ -50,5 +45,5 @@ function mapDispatchToProps(dispatch) {
 }
 
 export const ConnectedNewPlayer = connect(
-  mapStateToProps, mapDispatchToProps
+  null, mapDispatchToProps
 )(withStyles(styles)(NewPlayer));

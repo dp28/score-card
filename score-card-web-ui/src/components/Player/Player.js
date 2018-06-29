@@ -6,8 +6,9 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
-
 import { recordScore } from 'score-card-domain'
+
+import { selectGame } from '../../state/gameSelectors'
 
 const styles = {
   player: {
@@ -37,7 +38,7 @@ export const Player = ({ player, total, gameId, updateScore, classes }) => {
           <Typography className={classes.title}>{player.name}</Typography>
           <Typography className={classes.total}>{total}</Typography>
         </div>
-        <form onSubmit={updateScore(player.id, gameId)}>
+        <form onSubmit={updateScore}>
           <TextField
             id={`${player.id}_nextScore`}
             className={classes.nextScore}
@@ -52,22 +53,20 @@ export const Player = ({ player, total, gameId, updateScore, classes }) => {
   )
 }
 
-function mapStateToProps(game, { id }) {
+function mapStateToProps(state, { player, gameId }) {
   return {
-    player: game.players[id],
-    total: game.totals[id],
-    gameId: game.id
+    total: selectGame(gameId, state).totals[player.id],
   }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps(dispatch, { gameId, player }) {
   return {
-    updateScore: (playerId, gameId) => event => {
+    updateScore: event => {
       event.preventDefault();
-      const scoreField = event.target[`${playerId}_nextScore`];
+      const scoreField = event.target[`${player.id}_nextScore`];
       const score = Number(scoreField.value);
       scoreField.value = ""
-      dispatch(recordScore({ score, gameId, playerId }));
+      dispatch(recordScore({ score, gameId, playerId: player.id }));
     }
   }
 }

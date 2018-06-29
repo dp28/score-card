@@ -3,20 +3,35 @@ import { connect } from 'react-redux'
 
 import { ConnectedPlayer } from '../Player/Player'
 import { ConnectedNewPlayer } from '../NewPlayer/NewPlayer'
+import { selectGame } from '../../state/gameSelectors'
 
-export const Players = ({ playerIds, }) => {
+export const Players = ({ players, gameId, loading }) => {
+  if (loading) {
+    return <div className="loading" />
+  }
   return (
     <div className="Players">
       {
-        playerIds.map(id => <ConnectedPlayer id={id} key={id}/>)
+        players.map(player => (
+          <ConnectedPlayer key={player.id} player={player} gameId={gameId}/>
+        ))
       }
-      <ConnectedNewPlayer />
+      <ConnectedNewPlayer gameId={gameId} />
     </div>
   )
 }
 
-function mapStateToProps({ players }) {
-  return { playerIds: Object.keys(players) }
+function mapStateToProps(state, { match }) {
+  const game = selectGame(match.params.gameId, state)
+  if (game) {
+    return {
+      gameId: game.id,
+      players: Object.values(game.players)
+    }
+  }
+  else {
+    return { loading: true }
+  }
 }
 
 export const ConnectedPlayers = connect(mapStateToProps)(Players);

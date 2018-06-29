@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux'
-import { reducer } from 'score-card-domain'
+import { reducer as gameReducer } from 'score-card-domain'
 
+import { buildReducer } from './reducer'
 import { websocketURL } from '../config.json'
 import { ServerConnection } from '../communication/serverConnection'
 
@@ -14,6 +15,6 @@ function communicationMiddleware(store) {
   }
 }
 
-export const store = createStore(reducer, composeEnhancers(
+export const store = createStore(buildReducer(gameReducer), composeEnhancers(
   applyMiddleware(communicationMiddleware)
 ));
