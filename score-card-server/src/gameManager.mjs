@@ -35,6 +35,7 @@ export class GameManager {
 
   _subscribeConnectionToGame(connectionId, game) {
     if (!game.connectionIds.has(connectionId)) {
+      console.log('Adding subscriber to game', { connectionId, gameId: game.id });
       game.connectionIds.add(connectionId);
       game.events.forEach(event => this.sendToConnection(connectionId, event));
     }

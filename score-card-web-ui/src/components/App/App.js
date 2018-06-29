@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Route } from 'react-router'
 import { BrowserRouter } from 'react-router-dom'
 
-import { ConnectedStartGame } from '../StartGame/StartGame'
+import { Home } from '../Home/Home'
 import { ConnectedPlayers } from '../Players/Players'
 
 const appPadding = 10;
@@ -35,7 +35,7 @@ export const App = ({ hasStarted, classes }) => (
       <Paper className={classes.content}>
         <Typography className={classes.title}>Score Card</Typography>
 
-        <Route exact path="/" component={ConnectedStartGame}/>
+        <Route exact path="/" component={Home}/>
         <Route path="/games/:gameId" component={ConnectedPlayers}/>
       </Paper>
     </div>
