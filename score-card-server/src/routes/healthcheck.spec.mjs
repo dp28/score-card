@@ -1,4 +1,4 @@
-import { buildHealthcheckRoute } from './healthcheck'
+import { buildHealthcheckRoute } from './healthcheck.mjs'
 
 describe('healthcheckRoute', () => {
   let connectionManager;
@@ -28,14 +28,14 @@ describe('healthcheckRoute', () => {
   })
 
   describe('.requestHandler', () => {
-    it('send the current number of connections to the response', () => {
+    it('should send the current number of connections to the response', () => {
       const response = { send: jest.fn() }
       connectionManager.getConnectionCount.mockReturnValue(217)
       healthcheckRoute.requestHandler(null, response)
       expect(response.send.mock.calls[0][0].connectionCount).toEqual(217)
     })
 
-    it('send the current number of games to the response', () => {
+    it('should send the current number of games to the response', () => {
       const response = { send: jest.fn() }
       gameManager.getGameCount.mockReturnValue(1432)
       healthcheckRoute.requestHandler(null, response)
