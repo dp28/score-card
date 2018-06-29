@@ -80,6 +80,17 @@ describe('GameManager', () => {
           expect(manager.getGameCount() - originalGameCount).toBe(1);
         });
       });
+
+      describe('if an event is added without a conection id', () => {
+        describe('and another event is added by a connection', () => {
+          it('should not try and send the event to the undefined connectionId', () => {
+            const gameId = 'b'
+            manager.addGameEvent({ gameId })
+            manager.addGameEvent({ gameId }, 'connectionSenderId')
+            expect(findMessagesSentTo(undefined).length).toBe(0)
+          })
+        })
+      })
     });
   });
 });
