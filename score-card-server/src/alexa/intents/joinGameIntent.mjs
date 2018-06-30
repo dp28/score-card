@@ -1,3 +1,4 @@
+import { selectTotals } from '../../score-card-domain.mjs'
 import { ID_ADJECTIVES, ID_ANIMALS } from '../customSlots.mjs'
 
 const ID_FORMAT = '{-|ADJECTIVE} {-|ANIMAL} {-|NUMBER}'
@@ -45,8 +46,28 @@ function findIdInput(request) {
 function findGame({ response, gameManager, idDetection }) {
   const game = gameManager.getCurrentGameState(idDetection.value)
   if (game) {
-    response.say(`Found it`)
+    response.say(`The current total scores are`)
+    response.say(buildCurrentScoresSentence(game))
   } else {
     response.say(`I can't find a game with the id "${idDetection.input}"`)
+  }
+}
+
+function buildCurrentScoresSentence(game,) {
+  const totals = selectTotals(game)
+  const statements = totals.map(({ playerName, total }) => (
+    `${playerName} has ${total} points`
+  ))
+
+  switch (statements.length) {
+    case 0: return 'unavailable as their are no players in the game.'
+    case 1: return statements[0]
+    default: {
+      const lastTwoStatements = statements.slice(statements.length - 2)
+      const firstStatements = statements.slice(0, statements.length - 2)
+      const start = firstStatements.map(statement => `${statement}, `).join('')
+      const end = lastTwoStatements.join(' and ')
+      return start + end
+    }
   }
 }

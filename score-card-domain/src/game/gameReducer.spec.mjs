@@ -10,20 +10,13 @@ import {
   joinGame,
   JOIN_GAME
 } from './gameEvents'
+import {
+  buildStartedGame,
+  buildStartedGameWithScore,
+  buildStartedGameWithPlayer
+} from './gameSpecHelper.mjs'
 
 import { gameReducer } from './gameReducer'
-
-function buildStartedGame() {
-  const initialState = gameReducer(undefined, { type: undefined })
-  return gameReducer(initialState, startGame())
-}
-
-function buildStartedGameWithPlayer() {
-  const game = buildStartedGame()
-  const playerEvent = addPlayerToGame({ playerName: 'test', gameId: game.id })
-  const player = { id: playerEvent.playerId, name: playerEvent.playerName }
-  return { player, game: gameReducer(game, playerEvent) }
-}
 
 describe('gameReducer', () => {
   describe('calling with an unknown event type', () => {
@@ -137,12 +130,6 @@ describe('gameReducer', () => {
       })
     })
   })
-
-  function buildStartedGameWithScore(score = 10) {
-    const { game, player } = buildStartedGameWithPlayer()
-    const scoreEvent = recordScore({ score, playerId: player.id, gameId: game.id })
-    return { player, game: gameReducer(game, scoreEvent) }
-  }
 
   describe(`calling with a ${RECORD_SCORE} event`, () => {
     it('should update the total for the player by the specified score', () => {
