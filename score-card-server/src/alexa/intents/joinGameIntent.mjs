@@ -20,7 +20,7 @@ export function buildJoinGameIntent({ gameManager, domain }) {
     requestHandler: (request, response) => {
       const idDetection = findIdInput(request)
       if (idDetection.valid) {
-        findGame({ idDetection, response, gameManager, domain })
+        findGame({ idDetection, request, response, gameManager, domain })
       }
       else {
         response.say(`Sorry, that didn't seem to be a valid game id`)
@@ -42,9 +42,10 @@ function findIdInput(request) {
   }
 }
 
-function findGame({ response, gameManager, idDetection, domain }) {
+function findGame({ request, response, gameManager, idDetection, domain }) {
   const game = gameManager.getCurrentGameState(idDetection.value)
   if (game) {
+    request.getSession().set('gameId', idDetection.value)
     response.say(`The current total scores are`)
     response.say(buildCurrentScoresSentence(game, domain))
   } else {

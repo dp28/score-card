@@ -17,6 +17,7 @@ describe('JoinGameIntent', () => {
     let requestHandler
     let request
     let response
+    let session
     let call = () => requestHandler(request, response)
 
     function getResponseText() {
@@ -24,9 +25,12 @@ describe('JoinGameIntent', () => {
     }
 
     beforeEach(() => {
+      session = { set: jest.fn() }
       request = {
-        slot: jest.fn()
+        slot: jest.fn(),
+        getSession: jest.fn()
       }
+      request.getSession.mockReturnValue(session)
       response = {
         say: jest.fn(),
         shouldEndSession: jest.fn()
@@ -72,10 +76,21 @@ describe('JoinGameIntent', () => {
           call()
           expect(getResponseText()).toMatch(/adjective animal number/)
         })
+
+        it('should not try and save the id in the session', () => {
+          call()
+          expect(request.getSession.mock.calls.length).toBe(0)
+        })
       })
 
       describe('when the game can be found', () => {
         beforeEach(() => gameManager.getCurrentGameState.mockReturnValue({}))
+
+        it('should save the id in the session', () => {
+          selectTotals.mockReturnValue([])
+          call()
+          expect(session.set.mock.calls).toEqual([['gameId', 'adjective-animal-number']])
+        })
 
         describe('without any players', () => {
           it('should tell the user no players are in the game', () => {
