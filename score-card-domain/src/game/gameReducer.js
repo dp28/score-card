@@ -3,7 +3,8 @@ import {
   ADD_PLAYER,
   RECORD_SCORE,
   REMOVE_PLAYER,
-  JOIN_GAME
+  JOIN_GAME,
+  CHANGE_NAME
 } from './gameEvents'
 import { merge } from '../utils'
 
@@ -15,15 +16,18 @@ const INITIAL_STATE = {
   rounds: []
 }
 
+const EventSpecificReducers = {
+  [START_GAME]: startGame,
+  [CHANGE_NAME]: changeName,
+  [JOIN_GAME]: joinGame,
+  [ADD_PLAYER]: addPlayer,
+  [RECORD_SCORE]: recordScore,
+  [REMOVE_PLAYER]: removePlayer
+}
+
 export function gameReducer(game = INITIAL_STATE, event) {
-  switch (event.type) {
-    case RECORD_SCORE: return recordScore(game, event)
-    case ADD_PLAYER: return addPlayer(game, event)
-    case START_GAME: return startGame(game, event)
-    case JOIN_GAME: return joinGame(game, event)
-    case REMOVE_PLAYER: return removePlayer(game, event)
-    default: return game
-  }
+  const eventReducer = EventSpecificReducers[event.type]
+  return eventReducer ? eventReducer(game, event) : game
 }
 
 function recordScore(game, scoreEvent) {
@@ -104,13 +108,13 @@ function deleteFromMap(key) {
   }
 }
 
-function startGame(game, { gameId, createdAt }) {
+function startGame(game, { gameId, gameName, createdAt }) {
   if (Boolean(game.startedAt)) {
     return game
   } else if (Boolean(game.id)) {
     return merge(game, { startedAt: createdAt })
   }
-  return merge(INITIAL_STATE, { id: gameId, startedAt: createdAt })
+  return merge(INITIAL_STATE, { id: gameId, name: gameName, startedAt: createdAt })
 }
 
 function joinGame(game, { gameId }) {
@@ -118,4 +122,8 @@ function joinGame(game, { gameId }) {
     return game
   }
   return merge(game, { id: gameId, startedAt: null })
+}
+
+function changeName(game, { gameName }) {
+  return merge(game, { name: gameName })
 }

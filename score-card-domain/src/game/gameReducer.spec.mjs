@@ -8,7 +8,9 @@ import {
   removePlayer,
   REMOVE_PLAYER,
   joinGame,
-  JOIN_GAME
+  JOIN_GAME,
+  changeName,
+  CHANGE_NAME
 } from './gameEvents'
 import {
   buildStartedGame,
@@ -40,11 +42,12 @@ describe('gameReducer', () => {
 
   describe(`calling with a ${START_GAME} event`, () => {
     it('should have state containing the gameId and startedAt from the event,' +
-      ' no players, no totals, no rounds', () => {
-      const event = startGame()
+      ' the passed in name, no players, no totals, no rounds', () => {
+      const event = startGame({ gameName: 'test' })
       expect(gameReducer(undefined, event)).toEqual({
         id: event.gameId,
         startedAt: event.createdAt,
+        name: 'test',
         players: {},
         totals: {},
         rounds: []
@@ -250,6 +253,15 @@ describe('gameReducer', () => {
     it('should remove the player from all the rounds', () => {
       const doesNotIncludePlayer = round => !round.scores.hasOwnProperty(player.id)
       expect(updatedGame.rounds.every(doesNotIncludePlayer)).toEqual(true)
+    })
+  })
+
+
+  describe(`calling with a ${CHANGE_NAME} event`, () => {
+    it('return a game with the name from the event', () => {
+      const game = buildStartedGame()
+      const event = changeName({ gameName: 'test change', gameId: game.id })
+      expect(gameReducer(game, event).name).toEqual('test change')
     })
   })
 })

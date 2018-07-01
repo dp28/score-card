@@ -8,7 +8,9 @@ import {
   removePlayer,
   REMOVE_PLAYER,
   joinGame,
-  JOIN_GAME
+  JOIN_GAME,
+  changeName,
+  CHANGE_NAME
 } from './gameEvents'
 
 function itShouldBehaveLikeAGameEvent({ eventCreator, type, data }) {
@@ -48,6 +50,14 @@ describe('startGame', () => {
 
   it('should generate the id of the game', () => {
     expect(startGame().hasOwnProperty('gameId')).toBe(true)
+  })
+
+  it('should include the a null name for the game if one was not given', () => {
+    expect(startGame().gameName).toBeNull()
+  })
+
+  it('should include the name of the game if one was given', () => {
+    expect(startGame({ gameName: 'My game'}).gameName).toEqual('My game')
   })
 })
 
@@ -133,5 +143,23 @@ describe('joinGame', () => {
     eventCreator: joinGame,
     type: JOIN_GAME,
     data: { gameId }
+  })
+})
+
+describe('changeName', () => {
+  const gameId = 'game-id'
+
+  itShouldBehaveLikeAGameEvent({
+    eventCreator: changeName,
+    type: CHANGE_NAME,
+    data: { gameName: 'fake', gameId }
+  })
+
+  it('should include the id of the game', () => {
+    expect(changeName({ gameName: 'bla', gameId }).gameId).toBe(gameId)
+  })
+
+  it('should include the name of the game if one was given', () => {
+    expect(changeName({ gameName: 'My game'}).gameName).toEqual('My game')
   })
 })
