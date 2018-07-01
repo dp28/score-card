@@ -15,6 +15,7 @@ const styles = {
 }
 
 export const GameName = ({ changeGameName, saveNewGameName, gameName, classes }) => {
+  const safeGameName = gameName || ''
   return (
     <form onSubmit={saveNewGameName}>
       <Input
@@ -22,8 +23,11 @@ export const GameName = ({ changeGameName, saveNewGameName, gameName, classes })
         id="gameNameField"
         label="Game name"
         placeholder="Game name"
-        value={gameName || ''}
+        value={safeGameName}
         onChange={changeGameName}
+        inputProps={{
+          size: Math.max(7, safeGameName.length * 0.9)
+        }}
       />
     </form>
   )

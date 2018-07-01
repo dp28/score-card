@@ -1,4 +1,5 @@
 import { editingGameName, EDITING_GAME_NAME } from '../components/GameName/GameNameActions'
+import { shareGame, SHARE_GAME } from '../components/ShareButton/ShareButtonActions'
 import { buildReducer } from './reducer'
 
 const INIT_EVENT = { type: 'INIT' }
@@ -44,12 +45,20 @@ describe('reducer', () => {
   })
 
   describe(`calling with a domain CHANGE_NAME event`, () => {
-    it.only('should set the ui game name for the gameId to null', () => {
+    it('should set the ui game name for the gameId to null', () => {
       const editAction = editingGameName({ gameId: 'a', gameName: 'test' })
       const domainEvent = { type: 'DOMAIN_CHANGE_NAME', gameId: 'a', gameName: 'test' }
       const domain = { CHANGE_NAME: 'DOMAIN_CHANGE_NAME', reducer: x => x }
       const state = [editAction, domainEvent].reduce(buildReducer({ domain }), undefined)
       expect(state.ui.games.a.name).toEqual(null)
+    })
+  })
+
+  describe(`calling with a ${SHARE_GAME} action`, () => {
+    it('should set the ui game "sharing" property for the gameId to true', () => {
+      const action = shareGame({ gameId: 'a' })
+      const state = reducer(undefined, action)
+      expect(state.ui.games.a.sharing).toBe(true)
     })
   })
 })

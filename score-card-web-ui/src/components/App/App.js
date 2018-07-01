@@ -23,6 +23,7 @@ const styles = {
     marginBottom: 10
   },
   content: {
+    position: 'relative',
     maxWidth: 400,
     padding: 10,
     margin: "auto",

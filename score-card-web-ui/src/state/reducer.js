@@ -1,4 +1,5 @@
 import { EDITING_GAME_NAME } from '../components/GameName/GameNameActions'
+import { SHARE_GAME } from '../components/ShareButton/ShareButtonActions'
 const INITITAL_STATE = { games: {}, ui: { games: {} } }
 
 export const buildReducer = ({ domain }) => (state = INITITAL_STATE, event) => {
@@ -20,25 +21,37 @@ function gamesReducer(gameReducer, games, event) {
   return games
 }
 
-function uiReducer(state, event, { CHANGE_NAME }) {
-  switch (event.type) {
-    case EDITING_GAME_NAME: return changeUiGameName(state, event)
-    case CHANGE_NAME: return removeUiGameName(state, event)
-    default: return state
-  }
-}
-
-function changeUiGameName(state, { type, gameId, gameName }) {
-  const game = state.games[gameId] || {}
-  return {
-    ...state,
-    games: {
-      ...state.games,
-      [gameId]: { ...game, name: gameName }
+function uiReducer(state, event, domain) {
+  const gameId = event.gameId
+  if (gameId) {
+    return {
+      ...state,
+      games: {
+        ...state.games,
+        [gameId]: uiGameReducer(state.games[gameId] || {}, event, domain)
+      }
     }
   }
+  return state
 }
 
-function removeUiGameName(state, { gameId }) {
-  return changeUiGameName(state, { gameId, gameName: null })
+function uiGameReducer(game, event, { CHANGE_NAME }) {
+  switch (event.type) {
+    case EDITING_GAME_NAME: return changeUiGameName(game, event)
+    case CHANGE_NAME: return removeUiGameName(game, event)
+    case SHARE_GAME: return enableSharing(game, event)
+    default: return game
+  }
+}
+
+function changeUiGameName(game, { type, gameId, gameName }) {
+  return { ...game, name: gameName }
+}
+
+function removeUiGameName(game, { gameId }) {
+  return { ...game, name: null }
+}
+
+function enableSharing(game, { gameId }) {
+  return { ...game, sharing: true }
 }
