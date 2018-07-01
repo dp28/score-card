@@ -1,5 +1,6 @@
 import { editingGameName, EDITING_GAME_NAME } from '../components/GameName/GameNameActions'
 import { shareGame, SHARE_GAME } from '../components/ShareButton/ShareButtonActions'
+import { hideSharing, HIDE_SHARING } from '../components/SharingInfo/SharingInfoActions'
 import { buildReducer } from './reducer'
 
 const INIT_EVENT = { type: 'INIT' }
@@ -59,6 +60,14 @@ describe('reducer', () => {
       const action = shareGame({ gameId: 'a' })
       const state = reducer(undefined, action)
       expect(state.ui.games.a.sharing).toBe(true)
+    })
+  })
+
+  describe(`calling with a ${HIDE_SHARING} action`, () => {
+    it('should set the ui game "sharing" property for the gameId to false', () => {
+      const action = hideSharing({ gameId: 'a' })
+      const state = reducer(undefined, action)
+      expect(state.ui.games.a.sharing).toBe(false)
     })
   })
 })

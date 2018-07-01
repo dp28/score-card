@@ -3,7 +3,11 @@ import { withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
+import CardActions from '@material-ui/core/CardActions'
+import Button from '@material-ui/core/Button'
 import { connect } from 'react-redux'
+
+import { hideSharing } from './SharingInfoActions'
 
 const styles = {
   link: {
@@ -27,7 +31,7 @@ const styles = {
   }
 }
 
-export const SharingInfo = ({ shouldShow, readableGameId, classes, gameId }) => {
+export const SharingInfo = ({ shouldShow, readableGameId, classes, gameId, hide }) => {
   if (!shouldShow) {
     return null
   }
@@ -63,6 +67,11 @@ export const SharingInfo = ({ shouldShow, readableGameId, classes, gameId }) => 
             </Typography>
           </li>
         </ol>
+        <CardActions>
+          <Button variant="outlined" onClick={hide}>
+            Hide
+          </Button>
+        </CardActions>
       </CardContent>
     </Card>
   )
@@ -77,9 +86,9 @@ function mapStateToProps({ ui }, { gameId }) {
 
 function mapDispatchToProps(dispatch, { gameId }) {
   return {
-    addPlayer: event => {
+    hide: event => {
       event.preventDefault()
-      // dispatch(addPlayerToGame({ playerName, gameId  }))
+      dispatch(hideSharing({ gameId }))
     }
   }
 }

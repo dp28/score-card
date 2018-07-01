@@ -1,5 +1,7 @@
 import { EDITING_GAME_NAME } from '../components/GameName/GameNameActions'
 import { SHARE_GAME } from '../components/ShareButton/ShareButtonActions'
+import { HIDE_SHARING } from '../components/SharingInfo/SharingInfoActions'
+
 const INITITAL_STATE = { games: {}, ui: { games: {} } }
 
 export const buildReducer = ({ domain }) => (state = INITITAL_STATE, event) => {
@@ -39,7 +41,8 @@ function uiGameReducer(game, event, { CHANGE_NAME }) {
   switch (event.type) {
     case EDITING_GAME_NAME: return changeUiGameName(game, event)
     case CHANGE_NAME: return removeUiGameName(game, event)
-    case SHARE_GAME: return enableSharing(game, event)
+    case SHARE_GAME: return { ...game, sharing: true }
+    case HIDE_SHARING: return { ...game, sharing: false }
     default: return game
   }
 }
@@ -50,8 +53,4 @@ function changeUiGameName(game, { type, gameId, gameName }) {
 
 function removeUiGameName(game, { gameId }) {
   return { ...game, name: null }
-}
-
-function enableSharing(game, { gameId }) {
-  return { ...game, sharing: true }
 }
