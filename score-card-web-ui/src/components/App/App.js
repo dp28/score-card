@@ -1,13 +1,13 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
+import React from 'react'
+import { withStyles } from '@material-ui/core/styles'
+import Paper from '@material-ui/core/Paper'
+import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
 import { Route } from 'react-router'
 import { BrowserRouter } from 'react-router-dom'
 
 import { Home } from '../Home/Home'
-import { ConnectedPlayers } from '../Players/Players'
+import { ConnectedGame } from '../Game/Game'
 
 const appPadding = 10;
 
@@ -20,7 +20,7 @@ const styles = {
   },
   title: {
     fontSize: 30,
-    marginBottom: 20
+    marginBottom: 10
   },
   content: {
     maxWidth: 400,
@@ -36,7 +36,7 @@ export const App = ({ hasStarted, classes }) => (
         <Typography className={classes.title}>Score Card</Typography>
 
         <Route exact path="/" component={Home}/>
-        <Route path="/games/:gameId" component={ConnectedPlayers}/>
+        <Route path="/games/:gameId" component={ConnectedGame}/>
       </Paper>
     </div>
   </BrowserRouter>
