@@ -1,3 +1,5 @@
+import { buildReadableList } from '../languageUtils.mjs'
+
 export function buildGetTotalsIntent({ gameManager, domain }) {
   return {
     name: 'GetTotalsIntent',
@@ -54,18 +56,6 @@ function buildCurrentScoresSentence(game, domain) {
   const statements = totals.map(({ playerName, total }) => (
     `${playerName} has ${total} points`
   ))
-
-  switch (statements.length) {
-    case 0: return 'unavailable as their are no players in the game.'
-    case 1: return statements[0]
-    default: return buildReadableLongList(statements)
-  }
-}
-
-function buildReadableLongList(statements) {
-  const lastTwoStatements = statements.slice(statements.length - 2)
-  const firstStatements = statements.slice(0, statements.length - 2)
-  const start = firstStatements.map(statement => `${statement}, `).join('')
-  const end = lastTwoStatements.join(' and ')
-  return start + end
+  const sentence = buildReadableList(statements)
+  return sentence || 'unavailable as their are no players in the game.'
 }

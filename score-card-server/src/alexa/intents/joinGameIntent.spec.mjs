@@ -3,14 +3,14 @@ import { buildJoinGameIntent } from './joinGameIntent.mjs'
 describe('JoinGameIntent', () => {
   let intent
   let gameManager
-  let selectTotals
+  let domain
 
   beforeEach(() => {
-    selectTotals = jest.fn()
+    domain = {}
     gameManager = {
       getCurrentGameState: jest.fn()
     }
-    intent = buildJoinGameIntent({ gameManager, domain: { selectTotals } })
+    intent = buildJoinGameIntent({ gameManager, domain })
   })
 
   describe('#requestHandler', () => {
@@ -84,52 +84,65 @@ describe('JoinGameIntent', () => {
       })
 
       describe('when the game can be found', () => {
-        beforeEach(() => gameManager.getCurrentGameState.mockReturnValue({}))
+        beforeEach(() => {
+          domain.selectGameName = jest.fn()
+          domain.selectPlayerNames = jest.fn()
+          domain.selectPlayerNames.mockReturnValue([])
+          gameManager.getCurrentGameState.mockReturnValue({})
+        })
 
         it('should save the id in the session', () => {
-          selectTotals.mockReturnValue([])
           call()
           expect(session.set.mock.calls).toEqual([['gameId', 'adjective-animal-number']])
         })
 
-        describe('without any players', () => {
-          it('should tell the user no players are in the game', () => {
-            selectTotals.mockReturnValue([])
+        it('should read the game\'s name', () => {
+          domain.selectGameName.mockReturnValue('beanie')
+          call()
+          expect(getResponseText()).toMatch(/beanie/)
+        })
+
+        describe('if no players have been added', () => {
+          it('should say that there are no players', () => {
+            domain.selectPlayerNames.mockReturnValue([])
             call()
-            expect(getResponseText()).toMatch(/no players/)
+            expect(getResponseText()).toMatch(/no players/i)
           })
         })
 
-        describe('with one player', () => {
-          it('should tell the user the player\'s total', () => {
-            selectTotals.mockReturnValue([{ playerName: 'Daniel', total: 21 }])
+        describe('if multiple players have been added', () => {
+          beforeEach(() => {
+            domain.selectPlayerNames.mockReturnValue(['John', 'Joe', 'McDowell'])
+          })
+
+          it('should read the all the players\' names', () => {
             call()
-            expect(getResponseText()).toMatch(/Daniel has 21 points/)
+            expect(getResponseText()).toMatch(/John, Joe and McDowell/)
+          })
+
+          it('should read the number of players', () => {
+            call()
+            expect(getResponseText()).toMatch(/3/)
           })
         })
 
-        describe('with two players', () => {
-          it('should tell the user the players\' totals, separated by "and"', () => {
-            selectTotals.mockReturnValue([
-              { playerName: 'Daniel', total: 21 },
-              { playerName: 'John', total: 22 },
-            ])
+        describe('if only one player has been added', () => {
+          beforeEach(() => { domain.selectPlayerNames.mockReturnValue(['Daniel']) })
+          it('should say that there is only one player', () => {
             call()
-            expect(getResponseText()).toMatch(/Daniel has 21 points and John has 22 points/)
+            expect(getResponseText()).toMatch(/only/i)
           })
-        })
 
-        describe('with three or more players', () => {
-          it('should tell the user the players\' totals, comma separated but "and" for the last two', () => {
-            selectTotals.mockReturnValue([
-              { playerName: 'Daniel', total: 21 },
-              { playerName: 'John', total: 22 },
-              { playerName: 'Joe', total: 32 }
-            ])
+          it('should say that their name', () => {
+            domain.selectPlayerNames.mockReturnValue(['Daniel'])
             call()
-            expect(getResponseText()).toMatch(
-              /Daniel has 21 points, John has 22 points and Joe has 32/
-            )
+            expect(getResponseText()).toMatch(/Daniel/i)
+          })
+
+          it('should not pluralise player', () => {
+            domain.selectPlayerNames.mockReturnValue(['Daniel'])
+            call()
+            expect(getResponseText()).toMatch(/player[^s]/i)
           })
         })
       })

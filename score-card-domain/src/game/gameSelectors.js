@@ -17,3 +17,12 @@ function selectPlayerByName(playerName, game) {
   ))
   return player ? player : null
 }
+
+export function selectGameName(game) {
+  return game.name
+}
+
+
+export function selectPlayerNames(game) {
+  return Object.values(game.players).map(player => player.name)
+}
