@@ -1,42 +1,27 @@
+import { buildAlexaMocks } from '../alexaSpecHelper.mjs'
 import { buildJoinGameIntent } from './joinGameIntent.mjs'
 
 describe('JoinGameIntent', () => {
   let intent
   let gameManager
+  let selectTotals
+  let request
+  let response
+  let session
   let domain
 
   beforeEach(() => {
     domain = {}
-    gameManager = {
-      getCurrentGameState: jest.fn()
-    }
+    const mocks = buildAlexaMocks({ withSession: true })
+    gameManager = mocks.gameManager
+    request = mocks.request
+    response = mocks.response
+    session = mocks.session
     intent = buildJoinGameIntent({ gameManager, domain })
   })
 
   describe('#requestHandler', () => {
-    let requestHandler
-    let request
-    let response
-    let session
-    let call = () => requestHandler(request, response)
-
-    function getResponseText() {
-      return response.say.mock.calls.map(args => args[0]).join(' ')
-    }
-
-    beforeEach(() => {
-      session = { set: jest.fn() }
-      request = {
-        slot: jest.fn(),
-        getSession: jest.fn()
-      }
-      request.getSession.mockReturnValue(session)
-      response = {
-        say: jest.fn(),
-        shouldEndSession: jest.fn()
-      }
-      requestHandler = intent.requestHandler
-    })
+    let call = () => intent.requestHandler(request, response)
 
     it('should keep the session running', () => {
       call()
@@ -50,7 +35,7 @@ describe('JoinGameIntent', () => {
 
       it('should tell the user that the id is wrong', () => {
         call()
-        expect(getResponseText()).toMatch(/game\W+id/i)
+        expect(response.asText()).toMatch(/game\W+id/i)
       })
 
       it('should not try and fetch a game', () => {
@@ -74,7 +59,7 @@ describe('JoinGameIntent', () => {
       describe('when no game can be found', () => {
         it('should repeat the id to the user', () => {
           call()
-          expect(getResponseText()).toMatch(/adjective animal number/)
+          expect(response.asText()).toMatch(/adjective animal number/)
         })
 
         it('should not try and save the id in the session', () => {
@@ -99,14 +84,14 @@ describe('JoinGameIntent', () => {
         it('should read the game\'s name', () => {
           domain.selectGameName.mockReturnValue('beanie')
           call()
-          expect(getResponseText()).toMatch(/beanie/)
+          expect(response.asText()).toMatch(/beanie/)
         })
 
         describe('if no players have been added', () => {
           it('should say that there are no players', () => {
             domain.selectPlayerNames.mockReturnValue([])
             call()
-            expect(getResponseText()).toMatch(/no players/i)
+            expect(response.asText()).toMatch(/no players/i)
           })
         })
 
@@ -117,12 +102,12 @@ describe('JoinGameIntent', () => {
 
           it('should read the all the players\' names', () => {
             call()
-            expect(getResponseText()).toMatch(/John, Joe and McDowell/)
+            expect(response.asText()).toMatch(/John, Joe and McDowell/)
           })
 
           it('should read the number of players', () => {
             call()
-            expect(getResponseText()).toMatch(/3/)
+            expect(response.asText()).toMatch(/3/)
           })
         })
 
@@ -130,19 +115,19 @@ describe('JoinGameIntent', () => {
           beforeEach(() => { domain.selectPlayerNames.mockReturnValue(['Daniel']) })
           it('should say that there is only one player', () => {
             call()
-            expect(getResponseText()).toMatch(/only/i)
+            expect(response.asText()).toMatch(/only/i)
           })
 
           it('should say that their name', () => {
             domain.selectPlayerNames.mockReturnValue(['Daniel'])
             call()
-            expect(getResponseText()).toMatch(/Daniel/i)
+            expect(response.asText()).toMatch(/Daniel/i)
           })
 
           it('should not pluralise player', () => {
             domain.selectPlayerNames.mockReturnValue(['Daniel'])
             call()
-            expect(getResponseText()).toMatch(/player[^s]/i)
+            expect(response.asText()).toMatch(/player[^s]/i)
           })
         })
       })

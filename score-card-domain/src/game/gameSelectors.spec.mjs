@@ -6,7 +6,8 @@ import {
   selectTotals,
   selectTotalForPlayerName,
   selectGameName,
-  selectPlayerNames
+  selectPlayerNames,
+  selectPlayerTotal
 } from './gameSelectors'
 
 const firstPlayerScore = 22
@@ -32,6 +33,12 @@ describe('selectTotals', () => {
       { playerName: firstPlayer.name, total: firstPlayerScore },
       { playerName: secondPlayerEvent.playerName, total: secondPlayerScore },
     ])
+  })
+})
+
+describe('selectPlayerTotal', () => {
+  it('should return the total for the playerId', () => {
+    expect(selectPlayerTotal(firstPlayer.id, game)).toEqual(firstPlayerScore)
   })
 })
 

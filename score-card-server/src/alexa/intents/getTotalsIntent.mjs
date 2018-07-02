@@ -1,4 +1,5 @@
 import { buildReadableList } from '../languageUtils.mjs'
+import { withSavedGame } from './sessionUtils.mjs'
 
 export function buildGetTotalsIntent({ gameManager, domain }) {
   return {
@@ -22,33 +23,22 @@ export function buildGetTotalsIntent({ gameManager, domain }) {
       ]
     },
     requestHandler: (request, response) => {
-      const gameId = request.getSession().get('gameId')
-      if (gameId) {
-        response.say(getTotalsForGame({ gameId, gameManager, domain }))
-      }
-      else {
-        response.say(
-          `You haven't joined a game yet. To do so, say "join game id". Game ids
-          are normally an adjective, an animal and a number, for example
-          "old goose 17"`
-        )
-      }
-      response.shouldEndSession(false)
+      withSavedGame({
+        request,
+        response,
+        gameManager,
+        params: { domain },
+        calculateResponse
+      })
     }
   }
 }
 
-function getTotalsForGame({ gameId, gameManager, domain }) {
-  const game = gameManager.getCurrentGameState(gameId)
-  if (game) {
-    return [
-      `The current total scores are`,
-      buildCurrentScoresSentence(game, domain)
-    ].join(' ')
-  }
-  else {
-    return `I can't find a game with the id "${gameId.replace('-', ' ')}"`
-  }
+function calculateResponse({ game, domain }) {
+  return [
+    `The current total scores are`,
+    buildCurrentScoresSentence(game, domain)
+  ].join(' ')
 }
 
 function buildCurrentScoresSentence(game, domain) {

@@ -49,7 +49,7 @@ function findGame({ request, response, gameManager, idDetection, domain }) {
     request.getSession().set('gameId', idDetection.value)
     response.say(buildGameJoinedSummary(game, domain))
   } else {
-    response.say(`I can't find a game with the id "${idDetection.input}"`)
+    response.say(`I can't find a game with the identifier "${idDetection.input}"`)
   }
 }
 
