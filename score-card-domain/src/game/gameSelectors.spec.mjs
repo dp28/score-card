@@ -7,7 +7,8 @@ import {
   selectTotalForPlayerName,
   selectGameName,
   selectPlayerNames,
-  selectPlayerTotal
+  selectPlayerTotal,
+  selectPlayerByName
 } from './gameSelectors'
 
 const firstPlayerScore = 22
@@ -64,13 +65,53 @@ describe('selectTotalForPlayerName', () => {
 
   describe('if there is no player with that name', () => {
     it('should return null', () => {
-      expect(selectTotalForPlayerName('I cannot play', game)).toEqual(null)
+      expect(selectTotalForPlayerName('I cannot play', game)).toBeNull()
     })
   })
 
   describe('if the passed in name is a different case from the stored name', () => {
     it('should return the total for the player with that name, case insensitive', () => {
       expect(selectTotalForPlayerName(firstPlayer.name.toUpperCase(), game)).toEqual(firstPlayerScore)
+    })
+  })
+})
+
+describe('selectPlayerByName', () => {
+  it('should return the total for the player with that name', () => {
+    expect(selectPlayerByName(firstPlayer.name, game)).toEqual(firstPlayer)
+  })
+
+  describe('if the passed in name is a different case from the stored name', () => {
+    it('should return the total for the player with that name, case insensitive', () => {
+      expect(selectPlayerByName(firstPlayer.name.toUpperCase(), game)).toEqual(firstPlayer)
+    })
+  })
+
+  describe('if there is no player with that name', () => {
+    function withPlayers(...playerNames) {
+      return {
+        players: playerNames.reduce((players, name, i) => {
+          const id = name + i
+          players[id] = { id, name }
+          return players
+        }, {})
+      }
+    }
+
+    it('should find players with a single character difference in spelling', () => {
+      const game = withPlayers('Daniel', 'John', 'Alex', 'Mike')
+      expect(selectPlayerByName('Alec', game).name).toEqual('Alex')
+    })
+
+    it('should find players with fairly similar names', () => {
+      const game = withPlayers('Daniel', 'John', 'Alex', 'Mike')
+      expect(selectPlayerByName('Danyal', game).name).toEqual('Daniel')
+      expect(selectPlayerByName('Jon', game).name).toEqual('John')
+    })
+
+    it('should not return a player if the differences in spelling are large', () => {
+      const game = withPlayers('Daniel', 'John', 'Alex', 'Mike')
+      expect(selectPlayerByName('Jamie', game)).toBeNull()
     })
   })
 })
