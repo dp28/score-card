@@ -1,5 +1,5 @@
 import { createStore, applyMiddleware, compose } from 'redux'
-import * as domain from 'score-card-domain'
+import * as domain from '../score-card-domain'
 
 import { buildReducer } from './reducer'
 import { websocketURL } from '../config.json'
