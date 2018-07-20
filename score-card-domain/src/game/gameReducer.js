@@ -111,10 +111,9 @@ function deleteFromMap(key) {
 function startGame(game, { gameId, gameName, createdAt }) {
   if (Boolean(game.startedAt)) {
     return game
-  } else if (Boolean(game.id)) {
-    return merge(game, { startedAt: createdAt })
   }
-  return merge(INITIAL_STATE, { id: gameId, name: gameName, startedAt: createdAt })
+  const safeId = game.id || gameId
+  return merge(INITIAL_STATE, { id: safeId, name: gameName, startedAt: createdAt })
 }
 
 function joinGame(game, { gameId }) {

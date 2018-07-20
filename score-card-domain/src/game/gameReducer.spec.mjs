@@ -71,7 +71,22 @@ describe('gameReducer', () => {
             startedAt: startEvent.createdAt,
             players: {},
             totals: {},
-            rounds: []
+            rounds: [],
+            name: null
+          })
+        })
+
+        it('should add the gameName from the start event', () => {
+          const game = gameReducer(undefined, joinGame({ gameId: 'bla' }))
+          const startEvent = startGame({ gameName: 'test' })
+          const updatedGame = gameReducer(game, startEvent)
+          expect(updatedGame).toEqual({
+            id: 'bla',
+            startedAt: startEvent.createdAt,
+            players: {},
+            totals: {},
+            rounds: [],
+            name: 'test'
           })
         })
       })
