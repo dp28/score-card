@@ -4,12 +4,15 @@ import { buildJoinGameIntent } from './joinGameIntent.mjs'
 import { buildRecordScoreIntent } from './recordScoreIntent.mjs'
 import { buildGetTotalsIntent } from './getTotalsIntent.mjs'
 import { buildHelpIntent } from './helpIntent.mjs'
+import { buildStopIntent, buildCancelIntent } from './stopIntents.mjs'
 
 const INTENT_BUILDERS = [
   buildJoinGameIntent,
   buildRecordScoreIntent,
   buildGetTotalsIntent,
-  buildHelpIntent
+  buildHelpIntent,
+  buildStopIntent,
+  buildCancelIntent
 ]
 
 export function registerIntents({ alexaApp, gameManager }) {
