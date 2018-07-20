@@ -10,7 +10,9 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 function communicationMiddleware(store) {
   const connection = new ServerConnection(websocketURL, store.dispatch.bind(store))
   return next => event => {
-    connection.sendMessage(event)
+    if (event.hasOwnProperty('gameId') && !event.uiOnly) {
+      connection.sendMessage(event)
+    }
     next(event)
   }
 }
