@@ -2,12 +2,14 @@ import express from 'express'
 import expressWebsockets from 'express-ws'
 import * as path from 'path'
 
+import Config from './config'
+
 import { ConnectionManager } from './connectionManager.mjs'
 import { GameManager } from './gameManager.mjs'
 import { mountRoutes } from './routes/index.mjs'
 import { mountAlexaApp } from './alexa/index.mjs'
 
-const ServerPort = process.env.PORT || 8080
+const ServerPort = process.env.PORT || Config.PORT
 const app = express()
 expressWebsockets(app)
 

@@ -13,7 +13,8 @@ export function buildAlexaMocks({ withSession = false } = {}) {
     response: {
       say: jest.fn(),
       shouldEndSession: jest.fn(),
-      asText: () => mocks.response.say.mock.calls.map(args => args[0]).join(' ')
+      asText: () => mocks.response.say.mock.calls.map(args => args[0]).join(' '),
+      card: jest.fn()
     }
   }
   if (withSession) {
