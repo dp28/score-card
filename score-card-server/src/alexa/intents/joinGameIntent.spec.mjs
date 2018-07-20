@@ -87,6 +87,15 @@ describe('JoinGameIntent', () => {
           expect(response.asText()).toMatch(/beanie/)
         })
 
+        describe('if the game does not have a name', () => {
+          it('should say the game\'s id', () => {
+            gameManager.getCurrentGameState.mockReturnValue({ id: 'test id' })
+            domain.selectGameName.mockReturnValue(undefined)
+            call()
+            expect(response.asText()).toMatch(/test id/)
+          })
+        })
+
         describe('if no players have been added', () => {
           it('should say that there are no players', () => {
             domain.selectPlayerNames.mockReturnValue([])
