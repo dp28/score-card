@@ -5,7 +5,7 @@ export function withSavedGame({ request, response, gameManager, params, calculat
   }
   else {
     response.say(
-      `You haven't joined a game yet. To do so, say "join game id". Game ids are
+      `You haven't joined a game yet. To do so, say "join game id". A game id is
       normally an adjective, an animal and a number, for example "old goose 17"`
     )
   }
