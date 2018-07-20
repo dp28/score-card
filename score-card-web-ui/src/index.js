@@ -15,7 +15,7 @@ ReactDOM.render(
   document.getElementById('root')
 )
 
-registerServiceWorker()
+// registerServiceWorker()
 
 const dispatch = store.dispatch.bind(store)
 
