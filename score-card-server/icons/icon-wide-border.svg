@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+  <g data-bx-workspace="master" xmlns="http://www.w3.org/2000/svg" xmlns:bx="https://boxy-svg.com" viewBox="0 0 500 500"><g style="" transform="matrix(2.28328, 0, 0, 2.463424, -51.039715, 25.888859)"><rect x="361.142" y="216.209" width="83.421" height="107.181" rx="6" ry="6" style="stroke: rgb(0, 188, 212); stroke-linecap: round; stroke-linejoin: bevel; vector-effect: non-scaling-stroke; stroke-width: 19px; fill: rgb(255, 255, 255);" transform="matrix(0.969408, 0.245454, -0.245454, 0.969408, -166.964859, -261.694336)"></rect><rect x="91.868" y="41.974" width="83.421" height="107.181" rx="6" ry="6" style="stroke: rgb(0, 188, 212); stroke-linecap: round; stroke-linejoin: bevel; vector-effect: non-scaling-stroke; stroke-width: 19px; fill: rgb(255, 255, 255);"></rect><g transform="matrix(0.957805, -0.287428, 0.287428, 0.957805, -82.815414, 31.050922)"><rect x="124.077" y="65.998" width="83.421" height="107.181" rx="6" ry="6" style="stroke: rgb(0, 188, 212); stroke-linecap: round; stroke-linejoin: bevel; vector-effect: non-scaling-stroke; stroke-width: 19px; fill: rgb(255, 255, 255);"></rect><text transform="matrix(3.678876, 0, 0, 3.368649, -426.20694, -278.160645)" style="fill: rgb(51, 51, 51); font-family: Roboto; font-size: 24px; white-space: pre;" x="154.172" y="126.188">1</text></g></g></g>
+</svg>
