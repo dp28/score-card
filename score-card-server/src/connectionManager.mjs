@@ -1,3 +1,5 @@
+import { generateId } from './score-card-domain.mjs'
+
 export class ConnectionManager {
 
   constructor() {
@@ -5,7 +7,7 @@ export class ConnectionManager {
   }
 
   registerConnection(connection) {
-    const id = this._generateId();
+    const id = generateId();
     this.connectionMap.set(id, connection);
     connection.on('close', () => this.connectionMap.delete(id));
     return id;
@@ -22,10 +24,6 @@ export class ConnectionManager {
       return true;
     }
     return false;
-  }
-
-  _generateId() {
-    return String(this.getConnectionCount() + Math.random())
   }
 
 }

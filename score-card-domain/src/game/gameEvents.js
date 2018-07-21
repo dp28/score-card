@@ -1,4 +1,4 @@
-import { generateId } from '../ids.js'
+import { generateId, generateReadableId } from '../ids.js'
 import { merge } from '../utils.js'
 
 export const START_GAME = 'GAMES.START'
@@ -9,7 +9,7 @@ export const JOIN_GAME = 'GAMES.JOIN'
 export const CHANGE_NAME = 'GAMES.EDIT.NAME'
 
 export function startGame({ gameName = null } = {}) {
-  return merge(buildEvent(START_GAME), { gameName, gameId: generateId() })
+  return merge(buildEvent(START_GAME), { gameName, gameId: generateReadableId() })
 }
 
 export function addPlayerToGame({ playerName, gameId }) {
