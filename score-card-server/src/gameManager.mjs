@@ -3,52 +3,55 @@ import { log } from './logger.mjs'
 
 export class GameManager {
 
-  constructor(sendToConnection) {
-    this.gameMap = new Map();
-    this.sendToConnection = sendToConnection;
+  constructor(sendToConnection, gameEventRepository) {
+    this._gameConnectionIdMap = new Map()
+    this.sendToConnection = sendToConnection
+    this._gameEventRepository = gameEventRepository
   }
 
-  addGameEvent(gameEvent, senderConnectionId) {
-    const game = this._fetchGame(gameEvent.gameId);
-    this._subscribeConnectionToGame(senderConnectionId, game);
-    game.events.push(gameEvent);
-    this._broadcastEvent(gameEvent, game, senderConnectionId);
+  async addGameEvent(gameEvent, senderConnectionId) {
+    const game = await this._fetchGame(gameEvent.gameId)
+    this._subscribeConnectionToGame(senderConnectionId, game)
+    await this._gameEventRepository.store(gameEvent)
+    this._broadcastEvent(gameEvent, game, senderConnectionId)
   }
 
   getGameCount() {
-    return this.gameMap.size
+    return this._gameConnectionIdMap.size
   }
 
-  getCurrentGameState(gameId) {
-    if (this.gameMap.has(gameId)) {
-      const game = this.gameMap.get(gameId);
-      return game.events.reduce(reducer, undefined);
+  async getCurrentGameState(gameId) {
+    const events = await this._getGameEvents(gameId)
+    if (events.length > 0) {
+      return events.reduce(reducer, undefined)
     }
-    return null;
+    return null
   }
 
-  _fetchGame(gameId) {
-    if (this.gameMap.has(gameId)) {
-      return this.gameMap.get(gameId);
-    }
-    const game = this._createGame(gameId);
-    this.gameMap.set(gameId, game);
-    return game;
+  async _fetchGame(gameId) {
+    const events = await this._getGameEvents(gameId)
+    const connectionIds = this._fetchGameConnectionIds(gameId)
+    return { id: gameId, events, connectionIds }
   }
 
-  _createGame(gameId) {
-    return {
-      id: gameId,
-      events: [],
-      connectionIds: new Set([])
+  async _getGameEvents(gameId) {
+    return await this._gameEventRepository.findByGameId(gameId)
+  }
+
+  _fetchGameConnectionIds(gameId) {
+    if (this._gameConnectionIdMap.has(gameId)) {
+      return this._gameConnectionIdMap.get(gameId)
     }
+    const connectionIds = new Set([])
+    this._gameConnectionIdMap.set(gameId, connectionIds)
+    return connectionIds
   }
 
   _subscribeConnectionToGame(connectionId, game) {
     if (connectionId && !game.connectionIds.has(connectionId)) {
-      log('Adding subscriber to game', { connectionId, gameId: game.id });
-      game.connectionIds.add(connectionId);
-      game.events.forEach(event => this.sendToConnection(connectionId, event));
+      log('Adding subscriber to game', { connectionId, gameId: game.id })
+      game.connectionIds.add(connectionId)
+      game.events.forEach(event => this.sendToConnection(connectionId, event))
     }
   }
 

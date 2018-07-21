@@ -1,3 +1,4 @@
 {
-  "ROOT_URL": "https://card-scores.herokuapp.com"
+  "ROOT_URL": "https://card-scores.herokuapp.com",
+  "COLLECTION_PREFIX": ""
 }

@@ -9,26 +9,31 @@ import { GameManager } from './gameManager.mjs'
 import { mountRoutes } from './routes/index.mjs'
 import { mountAlexaApp } from './alexa/index.mjs'
 import { log } from './logger.mjs'
+import { buildGameEventRepository } from './repositories/gameEventRepository.mjs'
 
-const ServerPort = process.env.PORT || Config.PORT
-const app = express()
-expressWebsockets(app)
+buildGameEventRepository().then((gameEventRepository) => {
+  const ServerPort = process.env.PORT || Config.PORT
+  const app = express()
+  expressWebsockets(app)
 
-const connectionManager = new ConnectionManager()
-const gameManager = new GameManager(connectionManager.sendToConnection.bind(connectionManager))
+  const connectionManager = new ConnectionManager()
+  const gameManager = new GameManager(
+    connectionManager.sendToConnection.bind(connectionManager),
+    gameEventRepository
+  )
 
-mountRoutes({ app, connectionManager, gameManager })
-mountAlexaApp({ gameManager, expressApp: app })
+  mountRoutes({ app, connectionManager, gameManager })
+  mountAlexaApp({ gameManager, expressApp: app })
 
-if (process.env.NODE_ENV === 'production') {
-  log('Serving static assets')
-  const staticWebUiPath = path.join(__dirname, 'deployment-only/web-ui')
-  app.use(express.static(staticWebUiPath))
+  if (process.env.NODE_ENV === 'production') {
+    log('Serving static assets')
+    const staticWebUiPath = path.join(__dirname, 'deployment-only/web-ui')
+    app.use(express.static(staticWebUiPath))
 
-  app.get('/*', (_request, response) => {
-    response.sendFile(path.join(staticWebUiPath, 'index.html'))
-  })
-}
+    app.get('/*', (_request, response) => {
+      response.sendFile(path.join(staticWebUiPath, 'index.html'))
+    })
+  }
 
-app.listen(ServerPort)
-log(`Running at localhost:${ServerPort}`)
+  app.listen(ServerPort, () => { log(`Running at localhost:${ServerPort}`) })
+})
