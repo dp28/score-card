@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^1.2.3",
     "@material-ui/icons": "^1.1.0",
+    "cuid": "^2.1.1",
     "react": "^16.4.1",
     "react-app-rewire-eslint": "^0.2.3",
     "react-app-rewired": "^1.5.2",
@@ -19,7 +20,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "test": "react-app-rewired test --env=jsdom",
+    "test": "react-app-rewired test --env=jsdom --notify",
     "eject": "react-scripts eject"
   },
   "proxy": {
@@ -28,5 +29,8 @@
       "ws": true
     }
   },
-  "eslintIgnore": ["src/deployment-only/**/*.js"]
+  "eslintIgnore": [
+    "src/deployment-only/**/*.js"
+  ],
+  "devDependencies": {}
 }

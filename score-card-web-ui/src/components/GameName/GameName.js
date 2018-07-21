@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles'
 import Input from '@material-ui/core/Input'
 import { connect } from 'react-redux'
 
-import { changeName } from '../../score-card-domain'
+import { changeName } from '../../domainEvents'
 import { editingGameName } from './GameNameActions'
 
 const styles = {

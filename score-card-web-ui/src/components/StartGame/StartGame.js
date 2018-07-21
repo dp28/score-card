@@ -5,7 +5,7 @@ import TextField from '@material-ui/core/TextField'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import { startGame } from '../../score-card-domain'
+import { startGame } from '../../domainEvents'
 
 const styles = {
   textField: {

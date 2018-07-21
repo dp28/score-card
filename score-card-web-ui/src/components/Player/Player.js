@@ -7,7 +7,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import { connect } from 'react-redux';
 
-import { recordScore } from '../../score-card-domain'
+import { recordScore } from '../../domainEvents'
 import { selectGame } from '../../state/gameSelectors'
 
 const styles = {
