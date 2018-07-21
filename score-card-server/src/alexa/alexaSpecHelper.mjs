@@ -1,9 +1,10 @@
 export function buildAlexaMocks({ withSession = false } = {}) {
   const mocks = {
     gameManager: {
-      getCurrentGameState: jest.fn(() => Promise.resolve({})),
+      getCurrentGameState: jest.fn(() => Promise.resolve(null)),
       getGameCount: jest.fn(),
-      addGameEvent: jest.fn(() => Promise.resolve({}))
+      addGameEvent: jest.fn(() => Promise.resolve({})),
+      getMostRecentGameForClientId: jest.fn(() => Promise.resolve(null))
     },
     request: {
       slot: jest.fn(),
@@ -20,7 +21,8 @@ export function buildAlexaMocks({ withSession = false } = {}) {
   if (withSession) {
     const session = {
       set: jest.fn(),
-      get: jest.fn()
+      get: jest.fn(),
+      user: {}
     }
     mocks.request.getSession.mockReturnValue(session)
     return { ...mocks, session }
@@ -74,6 +76,18 @@ export function itShouldBehaveLikeASessionIntent({ buildIntent, buildDomain, whe
       await call()
       return expect(gameManager.getCurrentGameState.mock.calls.length).toBe(0)
     })
+
+    describe('but can be found in the database', () => {
+      beforeEach(() => {
+        gameManager.getMostRecentGameForClientId.mockReturnValue(Promise.resolve({ id: 'id' }))
+      })
+
+      whenThereIsAGame({
+        getDomain: () => domain,
+        getMocks: () => mocks,
+        callIntent: async () => await call()
+      })
+    })
   })
 
   describe('when an id can be found in the session', () => {
@@ -102,7 +116,7 @@ export function itShouldBehaveLikeASessionIntent({ buildIntent, buildDomain, whe
       whenThereIsAGame({
         getDomain: () => domain,
         getMocks: () => mocks,
-        callIntent: async () => await await call()
+        callIntent: async () => await call()
       })
     })
   })

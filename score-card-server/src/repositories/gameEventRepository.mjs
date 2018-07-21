@@ -16,10 +16,20 @@ class GameEventRepository {
   }
 
   async findByGameId(gameId) {
-    return await this._eventCollection.find({
-      $query: { gameId },
-      $orderBy: { createdAt: -1 }
-    }).map(removeMongoId)
+    return await this._eventCollection.find(
+      { gameId },
+      undefined,
+      { sort: [['createdAt', 'asc']] }
+    ).map(removeMongoId)
+  }
+
+  async findMostRecentGameId(clientId) {
+    const mostRecentGameEvents = await this._eventCollection.find(
+      { clientId },
+      { gameId: 'gameId '},
+      { sort: [['createdAt', 'desc']], limit: 1 }
+    )
+    return mostRecentGameEvents.length ? mostRecentGameEvents[0].gameId : null
   }
 }
 

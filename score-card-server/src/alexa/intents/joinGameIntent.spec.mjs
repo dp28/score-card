@@ -77,12 +77,39 @@ describe('JoinGameIntent', () => {
           domain.selectGameName = jest.fn()
           domain.selectPlayerNames = jest.fn()
           domain.selectPlayerNames.mockReturnValue([])
-          gameManager.getCurrentGameState.mockReturnValue(Promise.resolve({}))
+          domain.joinGame = jest.fn()
+          gameManager.getCurrentGameState.mockReturnValue(Promise.resolve({ id: 'id' }))
         })
 
         it('should save the id in the session', async () => {
           await call()
-          return expect(session.set.mock.calls).toEqual([['gameId', 'adjective-animal-number']])
+          return expect(session.set.mock.calls).toEqual([['gameId', 'id']])
+        })
+
+        it('should dispatch a joinGame event ', async () => {
+          const event = { a: 1 }
+          domain.joinGame.mockReturnValue(event)
+          await call()
+          return expect(gameManager.addGameEvent.mock.calls).toEqual([[event]])
+        })
+
+        describe('the joinGame event', () => {
+          let eventArgs
+
+          beforeEach(async () => {
+            request.userId = 'aUserId'
+            gameManager.getCurrentGameState.mockReturnValue(Promise.resolve({ id: 'id' }))
+            await call()
+            eventArgs = domain.joinGame.mock.calls[0][0]
+          })
+
+          it('should be built with the gameId', () => {
+            expect(eventArgs.gameId).toEqual('id')
+          })
+
+          it('should be built with the Alexa userId from the session as the clientId', () => {
+            expect(eventArgs.clientId).toEqual('aUserId')
+          })
         })
 
         it('should read the game\'s name', async () => {

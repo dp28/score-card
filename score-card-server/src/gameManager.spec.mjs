@@ -131,4 +131,24 @@ describe('GameManager', () => {
       })
     })
   })
+
+  describe('#getMostRecentGameForClientId', () => {
+    describe('when the repository has no events for that client id', () => {
+      beforeEach(() => { repository.findMostRecentGameId = () => Promise.resolve(null) })
+
+      it('should return null', async () => {
+        return expect(await manager.getMostRecentGameForClientId('bla')).toBeNull()
+      })
+    })
+
+    describe('when the repository has events for that client id', () => {
+      beforeEach(() => { repository.findMostRecentGameId = () => Promise.resolve('something') })
+
+      it('should return the current game state for that game id', async () => {
+        const mockGameState = { a: 'game state' }
+        manager.getCurrentGameState = jest.fn(() => Promise.resolve(mockGameState))
+        return expect(await manager.getMostRecentGameForClientId('bla')).toBe(mockGameState)
+      })
+    })
+  })
 })

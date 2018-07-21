@@ -6,8 +6,13 @@ import { registerIntents } from './intents/register.mjs'
 export function buildAlexaApp({ gameManager }) {
   const alexaApp = new alexa.app('score-card')
 
-  alexaApp.launch((request, response) => {
-    response.say('Which game would you like to join?')
+  alexaApp.launch(async (request, response) => {
+    const game = await fetchMostRecentGame(request.userId, gameManager)
+    if (game) {
+      response.say('Rejoined your game')
+    } else {
+      response.say('Which game would you like to join?')
+    }
     response.shouldEndSession(false)
   })
 
@@ -15,6 +20,13 @@ export function buildAlexaApp({ gameManager }) {
   registerIntents({ alexaApp, gameManager })
 
   return alexaApp
+}
+
+async function fetchMostRecentGame(clientId, gameManager) {
+  if (clientId) {
+    return await gameManager.getMostRecentGameForClientId(clientId)
+  }
+  return null
 }
 
 export function mountAlexaApp({ expressApp, gameManager }) {

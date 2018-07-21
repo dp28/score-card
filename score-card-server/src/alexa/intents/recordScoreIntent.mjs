@@ -36,19 +36,20 @@ export function buildRecordScoreIntent({ gameManager, domain }) {
   }
 }
 
-async function calculateResponse({ game, score, gameManager, domain, playerName }) {
+async function calculateResponse({ game, score, gameManager, domain, playerName, clientId }) {
   const player = domain.selectPlayerByName(playerName, game)
   if (player) {
-    return await recordScore({ score, player, game, gameManager, domain })
+    return await recordScore({ score, player, game, gameManager, domain, clientId })
   }
   else {
     return `Sorry, I can't find a player called ${playerName} in this game.`
   }
 }
 
-async function recordScore({ score, player, game, gameManager, domain }) {
+async function recordScore({ score, player, game, gameManager, domain, clientId }) {
   const event = domain.recordScore({
     score,
+    clientId,
     playerId: player.id,
     gameId: game.id
   })

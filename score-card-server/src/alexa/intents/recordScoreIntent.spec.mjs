@@ -43,13 +43,16 @@ describe('RecordScoreIntent#requestHandler', () => {
           getDomain().selectPlayerByName.mockReturnValue({ id: playerId })
         })
 
-        it('should call the recordScore event builder with game id, player id and score', async () => {
+        it('should call the recordScore event builder with client id from the session, game id, player id and score', async () => {
           getMocks().gameManager.getCurrentGameState.mockReturnValue(Promise.resolve({ id: 'b' }))
+          getMocks().gameManager.getMostRecentGameForClientId.mockReturnValue(Promise.resolve({ id: 'b' }))
+          getMocks().request.userId = 'c'
           await callIntent()
           return expect(getDomain().recordScore.mock.calls).toEqual([[{
             playerId,
             score: 21,
             gameId: 'b',
+            clientId: 'c'
           }]])
         })
 

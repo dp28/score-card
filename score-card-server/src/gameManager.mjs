@@ -28,6 +28,11 @@ export class GameManager {
     return null
   }
 
+  async getMostRecentGameForClientId(clientId) {
+    const gameId = await this._gameEventRepository.findMostRecentGameId(clientId)
+    return gameId ? await this.getCurrentGameState(gameId) : null
+  }
+
   async _fetchGame(gameId) {
     const events = await this._getGameEvents(gameId)
     const connectionIds = this._fetchGameConnectionIds(gameId)

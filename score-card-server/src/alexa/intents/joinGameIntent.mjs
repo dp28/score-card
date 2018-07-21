@@ -46,11 +46,18 @@ function findIdInput(request) {
 async function findGame({ request, response, gameManager, idDetection, domain }) {
   const game = await gameManager.getCurrentGameState(idDetection.value)
   if (game) {
-    request.getSession().set('gameId', idDetection.value)
-    response.say(buildGameJoinedSummary(game, domain))
+    await joinGame({ game, request, domain, gameManager, response })
   } else {
     response.say(`I can't find a game with the identifier "${idDetection.input}"`)
   }
+}
+
+async function joinGame({ game, request, domain, gameManager, response }) {
+  const session = request.getSession()
+  const joinEvent = domain.joinGame({ gameId: game.id, clientId: request.userId })
+  await gameManager.addGameEvent(joinEvent)
+  session.set('gameId', game.id)
+  response.say(buildGameJoinedSummary(game, domain))
 }
 
 function buildGameJoinedSummary(game, domain) {
