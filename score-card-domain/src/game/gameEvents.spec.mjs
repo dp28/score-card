@@ -14,7 +14,8 @@ import {
 } from './gameEvents'
 
 function itShouldBehaveLikeAGameEvent({ eventCreator, type, data }) {
-  const event = eventCreator(data)
+  const clientId = 'device-1'
+  const event = eventCreator(Object.assign({}, data, { clientId }))
 
   it(`should return an event with the type "${type}"`, () => {
     expect(event.type).toBe(type)
@@ -22,6 +23,10 @@ function itShouldBehaveLikeAGameEvent({ eventCreator, type, data }) {
 
   it('should have its own id', () => {
     expect(event.hasOwnProperty('id')).toBe(true)
+  })
+
+  it('should have the passed in clientId', () => {
+    expect(event.clientId).toBe(clientId)
   })
 
   it('should have an accurate timestamp as its createdAt', () => {

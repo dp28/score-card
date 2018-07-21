@@ -8,48 +8,44 @@ export const RECORD_SCORE = 'GAMES.SCORES.ADD'
 export const JOIN_GAME = 'GAMES.JOIN'
 export const CHANGE_NAME = 'GAMES.EDIT.NAME'
 
-export function startGame({ gameName = null } = {}) {
-  return merge(buildEvent(START_GAME), { gameName, gameId: generateReadableId() })
-}
-
-export function addPlayerToGame({ playerName, gameId }) {
+export function startGame({ clientId, gameName = null } = {}) {
   return merge(
-    buildEvent(ADD_PLAYER),
-    {
-      gameId,
-      playerName,
-      playerId: generateId()
-    }
+    baseEvent(START_GAME, clientId),
+    { gameName, gameId: generateReadableId() }
   )
 }
 
-export function recordScore({ score, playerId, gameId }) {
-  return merge(
-    buildEvent(RECORD_SCORE),
-    { gameId, playerId, score }
+export const addPlayerToGame = gameEventCreator(
+  ADD_PLAYER,
+  ({ playerName }) => ({ playerName, playerId: generateId() })
+)
+
+export const joinGame = gameEventCreator(JOIN_GAME)
+export const changeName = gameEventCreator(CHANGE_NAME, pick('gameName'))
+export const recordScore = gameEventCreator(RECORD_SCORE, pick('playerId', 'score'))
+export const removePlayer = gameEventCreator(REMOVE_PLAYER, pick('playerId'))
+
+function gameEventCreator(type, createDetails = () => ({})) {
+  return input => merge(
+    createDetails(input),
+    baseEvent(type, input.clientId),
+    { gameId: input.gameId }
   )
 }
 
-export function removePlayer({ playerId, gameId }) {
-  return merge(
-    buildEvent(REMOVE_PLAYER),
-    { gameId, playerId }
-  )
-}
-
-export function joinGame({ gameId }) {
-  return merge(buildEvent(JOIN_GAME), { gameId })
-}
-
-export function changeName({ gameName, gameId }) {
-  return merge(buildEvent(CHANGE_NAME), { gameName, gameId })
-}
-
-
-export function buildEvent(type) {
+function baseEvent(type, clientId) {
   return {
     type,
+    clientId,
     id: generateId(),
     createdAt: new Date()
   }
+}
+
+function pick(...propertyNames) {
+  return object => propertyNames.reduce(
+    (result, propertyName) => {
+      result[propertyName] = object[propertyName]
+      return result
+    }, {})
 }
