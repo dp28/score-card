@@ -163,6 +163,24 @@ describe('gameReducer', () => {
       expect(updatedGame.totals[otherPlayerEvent.playerId]).toEqual(0)
     })
 
+    describe('if the score is null', () => {
+      it('should not update the total for the player', () => {
+        const { game, player } = buildStartedGameWithScore(20)
+        const scoreEvent = recordScore({ score: null, playerId: player.id, gameId: game.id })
+        const updatedGame = gameReducer(game, scoreEvent)
+        expect(updatedGame.totals[player.id]).toEqual(20)
+      })
+    })
+
+    describe('if the score is not a number', () => {
+      it('should not update the total for the player', () => {
+        const { game, player } = buildStartedGameWithScore(20)
+        const scoreEvent = recordScore({ score: '123abc', playerId: player.id, gameId: game.id })
+        const updatedGame = gameReducer(game, scoreEvent)
+        expect(updatedGame.totals[player.id]).toEqual(20)
+      })
+    })
+
     describe(`calling with another ${RECORD_SCORE} event for the same player`, () => {
       it('should update the total for the player to be the sum of the scores', () => {
         const { game, player } = buildStartedGameWithScore(10)

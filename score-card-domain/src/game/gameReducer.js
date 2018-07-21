@@ -31,6 +31,9 @@ export function gameReducer(game = INITIAL_STATE, event) {
 }
 
 function recordScore(game, scoreEvent) {
+  if (isNaN(scoreEvent.score)) {
+    return game
+  }
   return merge(
     game,
     {
