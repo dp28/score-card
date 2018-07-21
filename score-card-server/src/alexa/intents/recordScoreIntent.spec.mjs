@@ -22,17 +22,17 @@ describe('RecordScoreIntent#requestHandler', () => {
       })
 
       describe('when there is no player in the game with the specified name', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           getDomain().selectPlayerByName.mockReturnValue(null)
-          callIntent()
+          await callIntent()
         })
 
-        it('should tell the user no players are in the game', () => {
-          expect(getMocks().response.asText()).toMatch(/can't find a player/)
+        it('should tell the user no players are in the game', async () => {
+          return expect(getMocks().response.asText()).toMatch(/can't find a player/)
         })
 
-        it('should tell the player name interpreted', () => {
-          expect(getMocks().response.asText()).toMatch(/Joe/)
+        it('should tell the player name interpreted', async () => {
+          return expect(getMocks().response.asText()).toMatch(/Joe/)
         })
       })
 
@@ -43,32 +43,32 @@ describe('RecordScoreIntent#requestHandler', () => {
           getDomain().selectPlayerByName.mockReturnValue({ id: playerId })
         })
 
-        it('should call the recordScore event builder with game id, player id and score', () => {
-          getMocks().gameManager.getCurrentGameState.mockReturnValue({ id: 'b' })
-          callIntent()
-          expect(getDomain().recordScore.mock.calls).toEqual([[{
+        it('should call the recordScore event builder with game id, player id and score', async () => {
+          getMocks().gameManager.getCurrentGameState.mockReturnValue(Promise.resolve({ id: 'b' }))
+          await callIntent()
+          return expect(getDomain().recordScore.mock.calls).toEqual([[{
             playerId,
             score: 21,
             gameId: 'b',
           }]])
         })
 
-        it('should dispatch a recordScore event for the player and score', () => {
+        it('should dispatch a recordScore event for the player and score', async () => {
           const event = { a: 1 }
           getDomain().recordScore.mockReturnValue(event)
-          callIntent()
-          expect(getMocks().gameManager.addGameEvent.mock.calls).toEqual([[event]])
+          await callIntent()
+          return expect(getMocks().gameManager.addGameEvent.mock.calls).toEqual([[event]])
         })
 
-        it('should repeat the interpreted score in case it was wrong', () => {
-          callIntent()
-          expect(getMocks().response.asText()).toMatch(/21/)
+        it('should repeat the interpreted score in case it was wrong', async () => {
+          await callIntent()
+          return expect(getMocks().response.asText()).toMatch(/21/)
         })
 
-        it('should return the player\'s new total', () => {
+        it('should return the player\'s new total', async () => {
           getDomain().selectPlayerTotal.mockReturnValue(43)
-          callIntent()
-          expect(getMocks().response.asText()).toMatch(/43/)
+          await callIntent()
+          return expect(getMocks().response.asText()).toMatch(/43/)
         })
       })
     }

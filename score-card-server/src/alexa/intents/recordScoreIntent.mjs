@@ -22,10 +22,10 @@ export function buildRecordScoreIntent({ gameManager, domain }) {
         '{-|PLAYER} scored {-|SCORE}',
       ]
     },
-    requestHandler: (request, response) => {
+    requestHandler: async (request, response) => {
       const playerName = request.slot('PLAYER')
       const score = Number(request.slot('SCORE'))
-      withSavedGame({
+      await withSavedGame({
         request,
         response,
         gameManager,
@@ -36,24 +36,24 @@ export function buildRecordScoreIntent({ gameManager, domain }) {
   }
 }
 
-function calculateResponse({ game, score, gameManager, domain, playerName }) {
+async function calculateResponse({ game, score, gameManager, domain, playerName }) {
   const player = domain.selectPlayerByName(playerName, game)
   if (player) {
-    return recordScore({ score, player, game, gameManager, domain })
+    return await recordScore({ score, player, game, gameManager, domain })
   }
   else {
     return `Sorry, I can't find a player called ${playerName} in this game.`
   }
 }
 
-function recordScore({ score, player, game, gameManager, domain }) {
+async function recordScore({ score, player, game, gameManager, domain }) {
   const event = domain.recordScore({
     score,
     playerId: player.id,
     gameId: game.id
   })
-  gameManager.addGameEvent(event)
-  const updatedGame = gameManager.getCurrentGameState(game.id)
+  await gameManager.addGameEvent(event)
+  const updatedGame = await gameManager.getCurrentGameState(game.id)
   const total = domain.selectPlayerTotal(player.id, updatedGame)
   return `After adding ${score}, ${player.name} now has ${total} points.`
 }

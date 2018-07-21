@@ -1,7 +1,7 @@
-export function withSavedGame({ request, response, gameManager, params, calculateResponse }) {
+export async function withSavedGame({ request, response, gameManager, params, calculateResponse }) {
   const gameId = request.getSession().get('gameId')
   if (gameId) {
-    response.say(runWithinGame({ gameId, gameManager, params, calculateResponse }))
+    response.say(await runWithinGame({ gameId, gameManager, params, calculateResponse }))
   }
   else {
     response.say(
@@ -12,10 +12,10 @@ export function withSavedGame({ request, response, gameManager, params, calculat
   response.shouldEndSession(false)
 }
 
-function runWithinGame({ gameId, gameManager, params, calculateResponse }) {
-  const game = gameManager.getCurrentGameState(gameId)
+async function runWithinGame({ gameId, gameManager, params, calculateResponse }) {
+  const game = await gameManager.getCurrentGameState(gameId)
   if (game) {
-    return calculateResponse(Object.assign({ game, gameManager }, params))
+    return await calculateResponse(Object.assign({ game, gameManager }, params))
   }
   else {
     return `Sorry, I can't find a game with the id "${gameId.replace('-', ' ')}".`

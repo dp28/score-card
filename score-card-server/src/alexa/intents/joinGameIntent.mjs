@@ -18,15 +18,15 @@ export function buildJoinGameIntent({ gameManager, domain }) {
         `join game ${ID_FORMAT}`,
       ]
     },
-    requestHandler: (request, response) => {
+    requestHandler: async (request, response) => {
+      response.shouldEndSession(false)
       const idDetection = findIdInput(request)
       if (idDetection.valid) {
-        findGame({ idDetection, request, response, gameManager, domain })
+        await findGame({ idDetection, request, response, gameManager, domain })
       }
       else {
         response.say(`Sorry, that didn't seem to be a valid game id`)
       }
-      response.shouldEndSession(false)
     }
   }
 }
@@ -43,8 +43,8 @@ function findIdInput(request) {
   }
 }
 
-function findGame({ request, response, gameManager, idDetection, domain }) {
-  const game = gameManager.getCurrentGameState(idDetection.value)
+async function findGame({ request, response, gameManager, idDetection, domain }) {
+  const game = await gameManager.getCurrentGameState(idDetection.value)
   if (game) {
     request.getSession().set('gameId', idDetection.value)
     response.say(buildGameJoinedSummary(game, domain))

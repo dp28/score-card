@@ -22,8 +22,8 @@ export function buildGetTotalsIntent({ gameManager, domain }) {
         'tell us the scores',
       ]
     },
-    requestHandler: (request, response) => {
-      withSavedGame({
+    requestHandler: async (request, response) => {
+      await withSavedGame({
         request,
         response,
         gameManager,
