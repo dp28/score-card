@@ -1,34 +1,22 @@
-import { connect } from 'mongodb-bluebird'
-
-import Config from '../config'
-import { log } from '../logger.mjs'
-
-const CollectionName = `${Config.COLLECTION_PREFIX}events`
+import { getCollection } from './mongo.mjs'
 
 export async function buildGameEventRepository() {
-  try {
-    const database = await connect(process.env.MONGODB_URI)
-    log('Connected to MongoDB')
-    return new GameEventRepository(database)
-  }
-  catch (error) {
-    console.error('Failed to connect to MongoDB')
-    throw error
-  }
+  const eventCollection = await getCollection('events')
+  return new GameEventRepository(eventCollection)
 }
 
 class GameEventRepository {
 
-  constructor(db) {
-    this._events = db.collection(CollectionName)
+  constructor(eventCollection) {
+    this._eventCollection = eventCollection
   }
 
   async store(gameEvent) {
-    return await this._events.insert(gameEvent)
+    return await this._eventCollection.insert(gameEvent)
   }
 
   async findByGameId(gameId) {
-    return await this._events.find({
+    return await this._eventCollection.find({
       $query: { gameId },
       $orderBy: { createdAt: -1 }
     }).map(removeMongoId)
