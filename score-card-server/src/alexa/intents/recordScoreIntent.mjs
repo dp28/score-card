@@ -25,7 +25,6 @@ export function buildRecordScoreIntent({ gameManager, domain }) {
     requestHandler: (request, response) => {
       const playerName = request.slot('PLAYER')
       const score = Number(request.slot('SCORE'))
-      console.log({ score});
       withSavedGame({
         request,
         response,

@@ -1,4 +1,5 @@
 import { reducer } from './score-card-domain.mjs'
+import { log } from './logger.mjs'
 
 export class GameManager {
 
@@ -45,7 +46,7 @@ export class GameManager {
 
   _subscribeConnectionToGame(connectionId, game) {
     if (connectionId && !game.connectionIds.has(connectionId)) {
-      console.log('Adding subscriber to game', { connectionId, gameId: game.id });
+      log('Adding subscriber to game', { connectionId, gameId: game.id });
       game.connectionIds.add(connectionId);
       game.events.forEach(event => this.sendToConnection(connectionId, event));
     }

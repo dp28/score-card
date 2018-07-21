@@ -8,6 +8,7 @@ import { ConnectionManager } from './connectionManager.mjs'
 import { GameManager } from './gameManager.mjs'
 import { mountRoutes } from './routes/index.mjs'
 import { mountAlexaApp } from './alexa/index.mjs'
+import { log } from './logger.mjs'
 
 const ServerPort = process.env.PORT || Config.PORT
 const app = express()
@@ -20,7 +21,7 @@ mountRoutes({ app, connectionManager, gameManager })
 mountAlexaApp({ gameManager, expressApp: app })
 
 if (process.env.NODE_ENV === 'production') {
-  console.log('Serving static assets')
+  log('Serving static assets')
   const staticWebUiPath = path.join(__dirname, 'deployment-only/web-ui')
   app.use(express.static(staticWebUiPath))
 
@@ -30,4 +31,4 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.listen(ServerPort)
-console.log(`Running at localhost:${ServerPort}`)
+log(`Running at localhost:${ServerPort}`)

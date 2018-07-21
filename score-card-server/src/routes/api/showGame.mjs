@@ -1,3 +1,5 @@
+import { log } from '../../logger.mjs'
+
 export function buildShowGameRoute({ connectionManager, gameManager }) {
   return {
     path: '/api/games/:gameId',
@@ -5,7 +7,7 @@ export function buildShowGameRoute({ connectionManager, gameManager }) {
     name: 'showGame',
     requestHandler: (request, response) => {
       const gameId = request.params.gameId
-      console.log(`GET /api/games/${gameId}`)
+      log(`GET /api/games/${gameId}`)
       const game = gameManager.getCurrentGameState(gameId)
       if (game) {
         response.send(game)

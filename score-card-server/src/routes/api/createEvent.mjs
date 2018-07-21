@@ -1,10 +1,12 @@
+import { log } from '../../logger.mjs'
+
 export function buildCreateEventRoute({ connectionManager, gameManager }) {
   return {
     path: '/api/events',
     method: 'post',
     name: 'createEvent',
     requestHandler: (request, response) => {
-      console.log('POST /api/events')
+      log('POST /api/events')
 
       const event = request.body
       if (typeof event.gameId === 'string') {

@@ -5,7 +5,7 @@
   "main": "src/server.mjs",
   "scripts": {
     "start": "BABEL_DISABLE_CACHE=1 nodemon --exec npx babel-node --ignore '/node_modules/(?!score-card-domain)' -- src/server.mjs",
-    "test": "jest --watchAll --notify",
+    "test": "SUPPRESS_LOGGING=true jest --watchAll --notify",
     "schema": "BABEL_DISABLE_CACHE=1 npx babel-node src/alexa/generateSchema.js | tail -n+2 > alexa_skill_schema.json && echo 'Wrote to alexa_skill_schema.json'"
   },
   "repository": {

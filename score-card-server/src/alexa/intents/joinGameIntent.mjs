@@ -56,7 +56,6 @@ function findGame({ request, response, gameManager, idDetection, domain }) {
 function buildGameJoinedSummary(game, domain) {
   const playerNames = domain.selectPlayerNames(game)
   const playersPhrase = buildPlayersPhrase(playerNames)
-  console.log(game);
   const name = domain.selectGameName(game) || game.id
   return `Joined ${name}. ${playersPhrase}`
 }
