@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:se="http://svg-edit.googlecode.com">
+ <g class="layer">
+  <g data-bx-workspace="master" id="svg_1" xmlns="http://www.w3.org/2000/svg">
+   <g id="svg_2" transform="matrix(0.390818 0 0 0.440422 30.1158 58.2761)">
+    <rect fill="rgb(255, 255, 255)" height="107.181" id="svg_3" rx="6" ry="6" stroke="rgb(0, 188, 212)" stroke-linecap="round" stroke-linejoin="bevel" stroke-width="19px" transform="matrix(0.969408 0.245454 -0.245454 0.969408 -166.965 -261.694)" width="83.421" x="215.964353" y="102.152451"/>
+    <rect fill="rgb(255, 255, 255)" height="107.181" id="svg_4" rx="6" ry="6" stroke="rgb(0, 188, 212)" stroke-linecap="round" stroke-linejoin="bevel" stroke-width="19px" width="83.421" x="-20.872742" y="-104.227769"/>
+    <g id="svg_5" transform="matrix(0.957805 -0.287428 0.287428 0.957805 -82.8154 31.0509)">
+     <rect fill="rgb(255, 255, 255)" height="107.181" id="svg_6" rx="6" ry="6" stroke="rgb(0, 188, 212)" stroke-linecap="round" stroke-linejoin="bevel" stroke-width="19px" width="83.421" x="58.116185" y="-106.438697"/>
+     <text fill="rgb(51, 51, 51)" font-family="Roboto, sans-serif" font-size="24px" id="svg_7" transform="matrix(3.67888 0 0 3.36865 -453.314 -419.151)" x="143.61078" y="116.852945">1</text>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>

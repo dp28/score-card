@@ -46,7 +46,7 @@ export const Player = ({ player, total, gameId, updateScore, classes }) => {
             type="number"
             margin="normal"
           />
-          <Button type="submit" variant="fab" mini>+</Button>
+          <Button type="submit" variant="fab" color="primary" mini>+</Button>
         </form>
       </CardContent>
     </Card>

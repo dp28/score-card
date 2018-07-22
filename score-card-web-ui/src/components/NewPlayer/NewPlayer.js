@@ -25,7 +25,7 @@ export const NewPlayer = ({ addPlayer, gameId, classes }) => {
               label="Add player"
               margin="normal"
             />
-            <Button type="submit" variant="fab" mini>+</Button>
+            <Button type="submit" variant="fab" color="primary">+</Button>
           </form>
         </CardContent>
       </Card>
