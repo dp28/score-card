@@ -21,13 +21,67 @@ describe('RecordScoreIntent#requestHandler', () => {
         }[slotName])
       })
 
+      describe('when no player was specified in the input', () => {
+        beforeEach(() => {
+          getMocks().request.slot = slotName => ({
+            SCORE: score
+          }[slotName])
+        })
+        beforeEach(async () => {
+          await callIntent()
+        })
+
+        it('should ask the user for a player', async () => {
+          return expect(getMocks().response.asText()).toMatch(/which player/)
+        })
+
+        it('should ask the user to try again', async () => {
+          return expect(getMocks().response.asText()).toMatch(/try again/i)
+        })
+
+        it('should keep the session running', async () => {
+          return expect(getMocks().response.shouldEndSession.mock.calls).toEqual([[false]])
+        })
+
+        it('should reprompt users to interact with the game', async () => {
+          return expect(getMocks().response.asRepromptText()).toMatch(/add score.+current score/i)
+        })
+      })
+
+      describe('when no score was specified in the input', () => {
+        beforeEach(() => {
+          getMocks().request.slot = slotName => ({
+            PLAYER: playerName
+          }[slotName])
+        })
+        beforeEach(async () => {
+          await callIntent()
+        })
+
+        it('should ask the user for a score', async () => {
+          return expect(getMocks().response.asText()).toMatch(/how many points/)
+        })
+
+        it('should ask the user to try again', async () => {
+          return expect(getMocks().response.asText()).toMatch(/try again/i)
+        })
+
+        it('should keep the session running', async () => {
+          return expect(getMocks().response.shouldEndSession.mock.calls).toEqual([[false]])
+        })
+
+        it('should reprompt users to interact with the game', async () => {
+          return expect(getMocks().response.asRepromptText()).toMatch(/add score.+current score/i)
+        })
+      })
+
       describe('when there is no player in the game with the specified name', () => {
         beforeEach(async () => {
           getDomain().selectPlayerByName.mockReturnValue(null)
           await callIntent()
         })
 
-        it('should tell the user no players are in the game', async () => {
+        it('should tell the user the players is not in the game', async () => {
           return expect(getMocks().response.asText()).toMatch(/can't find a player/)
         })
 

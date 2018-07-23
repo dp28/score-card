@@ -7,7 +7,7 @@ export function buildAlexaMocks({ withSession = false } = {}) {
       getMostRecentGameForClientId: jest.fn(() => Promise.resolve(null))
     },
     request: {
-      slot: jest.fn(),
+      slot: jest.fn(() => 'fake-slot-value'),
       getSession: jest.fn()
     },
     response: {
