@@ -8,13 +8,14 @@ export function buildAlexaMocks({ withSession = false } = {}) {
     },
     request: {
       slot: jest.fn(),
-      say: jest.fn(),
       getSession: jest.fn()
     },
     response: {
       say: jest.fn(),
+      reprompt: jest.fn(),
       shouldEndSession: jest.fn(),
       asText: () => mocks.response.say.mock.calls.map(args => args[0]).join(' '),
+      asRepromptText: () => mocks.response.reprompt.mock.calls.map(args => args[0]).join(' '),
       card: jest.fn()
     }
   }
@@ -52,11 +53,6 @@ export function itShouldBehaveLikeASessionIntent({ buildIntent, buildDomain, whe
     call = () => intent.requestHandler(request, response)
   })
 
-  it('should keep the session running', async () => {
-    await call()
-    return expect(response.shouldEndSession.mock.calls).toEqual([[false]])
-  })
-
   it('should get the gameId from the session', async () => {
     await call()
     return expect(session.get.mock.calls).toEqual([['gameId']])
@@ -67,9 +63,19 @@ export function itShouldBehaveLikeASessionIntent({ buildIntent, buildDomain, whe
       session.get.mockReturnValue(undefined)
     })
 
-    it('should tell the user that they have not joined a game', async () => {
+    it('should tell the user that they have not joined a game and ask for one', async () => {
       await call()
-      return expect(response.asText()).toMatch(/join/i)
+      return expect(response.asText()).toMatch(/haven't joined.*join/i)
+    })
+
+    it('should reprompt users to join a game', async () => {
+      await call()
+      return expect(response.asRepromptText()).toMatch(/game.*join/i)
+    })
+
+    it('should keep the session running', async () => {
+      await call()
+      return expect(response.shouldEndSession.mock.calls).toEqual([[false]])
     })
 
     it('should not try and fetch a game', async () => {
@@ -104,9 +110,19 @@ export function itShouldBehaveLikeASessionIntent({ buildIntent, buildDomain, whe
     describe('when no game can be found', () => {
       beforeEach(() => gameManager.getCurrentGameState.mockReturnValue(Promise.resolve(null)))
 
-      it('should tell the user the game can no longer be found with that id', async () => {
+      it('should tell the user the game can no longer be found with that id and ask for a new one', async () => {
         await call()
-        return expect(response.asText()).toMatch(/(found|find).+fake id/)
+        return expect(response.asText()).toMatch(/(found|find).+fake id.*join/)
+      })
+
+      it('should keep the session running', async () => {
+        await call()
+        return expect(response.shouldEndSession.mock.calls).toEqual([[false]])
+      })
+
+      it('should reprompt users to join a game', async () => {
+        await call()
+        return expect(response.asRepromptText()).toMatch(/game.*join/i)
       })
     })
 

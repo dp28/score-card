@@ -9,6 +9,12 @@ describe('GetTotalsIntent#requestHandler', () => {
     }),
 
     whenThereIsAGame: ({ getMocks, callIntent, getDomain }) => {
+      it('should close the session', async () => {
+        getDomain().selectTotals.mockReturnValue([])
+        await callIntent()
+        return expect(getMocks().response.shouldEndSession.mock.calls).toEqual([[true]])
+      })
+
       describe('without any players', () => {
         it('should tell the user no players are in the game', async () => {
           getDomain().selectTotals.mockReturnValue([])

@@ -25,7 +25,8 @@ export function buildJoinGameIntent({ gameManager, domain }) {
         await findGame({ idDetection, request, response, gameManager, domain })
       }
       else {
-        response.say(`Sorry, that didn't seem to be a valid game id`)
+        response.say(`Sorry, that didn't seem to be a valid game ID, please try again.`)
+        response.reprompt('Which game would you like to join?')
       }
     }
   }
@@ -48,7 +49,10 @@ async function findGame({ request, response, gameManager, idDetection, domain })
   if (game) {
     await joinGame({ game, request, domain, gameManager, response })
   } else {
-    response.say(`I can't find a game with the identifier "${idDetection.input}"`)
+    response.say(`
+      I can't find a game with the ID "${idDetection.input}". Please try another ID.
+    `)
+    response.reprompt('Which game would you like to join?')
   }
 }
 
@@ -64,7 +68,7 @@ function buildGameJoinedSummary(game, domain) {
   const playerNames = domain.selectPlayerNames(game)
   const playersPhrase = buildPlayersPhrase(playerNames)
   const name = domain.selectGameName(game) || game.id
-  return `Joined ${name}. ${playersPhrase}`
+  return `Joined ${name}. ${playersPhrase} What would you like to do?`
 }
 
 function buildPlayersPhrase(playerNames) {

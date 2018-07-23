@@ -5,7 +5,7 @@ const oneline = strings => strings.join(' ').replace(/\s+/g, ' ')
 const HelpMessage = oneline`
   You can join an existing game, ask for the current scores, and add to a
   player's score. I've sent instructions on how to create a new game to your
-  device.
+  device. What would you like to do now?
 `
 
 export function buildHelpIntent() {

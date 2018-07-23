@@ -34,6 +34,18 @@ describe('RecordScoreIntent#requestHandler', () => {
         it('should tell the player name interpreted', async () => {
           return expect(getMocks().response.asText()).toMatch(/Joe/)
         })
+
+        it('should ask the user to try again', async () => {
+          return expect(getMocks().response.asText()).toMatch(/try again/i)
+        })
+
+        it('should keep the session running', async () => {
+          return expect(getMocks().response.shouldEndSession.mock.calls).toEqual([[false]])
+        })
+
+        it('should reprompt users to interact with the game', async () => {
+          return expect(getMocks().response.asRepromptText()).toMatch(/add score.+current score/i)
+        })
       })
 
       describe('when the player is in the game', () => {
@@ -68,10 +80,20 @@ describe('RecordScoreIntent#requestHandler', () => {
           return expect(getMocks().response.asText()).toMatch(/21/)
         })
 
+        it('should prompt the user for further action', async () => {
+          await callIntent()
+          return expect(getMocks().response.asText()).toMatch(/anything else/i)
+        })
+
         it('should return the player\'s new total', async () => {
           getDomain().selectPlayerTotal.mockReturnValue(43)
           await callIntent()
           return expect(getMocks().response.asText()).toMatch(/43/)
+        })
+
+        it('should keep the session running', async () => {
+          await callIntent()
+          return expect(getMocks().response.shouldEndSession.mock.calls).toEqual([[false]])
         })
       })
     }

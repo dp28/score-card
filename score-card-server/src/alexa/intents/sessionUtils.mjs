@@ -3,15 +3,15 @@ export async function withSavedGame({ request, response, gameManager, params, ca
   const clientId = request.userId
   const game = await findGame({ session, clientId, gameManager, response })
   if (game) {
-    response.say(await runWithinGame({ game, gameManager, params, calculateResponse, clientId }))
+    await runWithinGame({ game, gameManager, params, calculateResponse, clientId, response })
   }
   else {
+    response.shouldEndSession(false)
     response.say(
-      `You haven't joined a game yet. To do so, say "join game ID". A game ID is
-      normally an adjective, an animal and a number, for example "old goose 17"`
+      `You haven't joined a game yet. Which game would you like to join?`
     )
+    response.reprompt('Which game would you like to join?')
   }
-  response.shouldEndSession(false)
 }
 
 async function findGame({ session, clientId, gameManager, response }) {
@@ -26,13 +26,16 @@ async function findGameFromSession({ session, gameManager, response }) {
   if (sessionGameId) {
     const game = await gameManager.getCurrentGameState(sessionGameId)
     if (!game) {
-      response.say(`Sorry, I can't find a game with the ID "${sessionGameId.replace('-', ' ')}".`)
+      const readableId = sessionGameId.replace('-', ' ')
+      response.say(
+        `Sorry, I can't find a game with the ID "${readableId}". Which game would you like to join?`
+      )
     }
     return game
   }
   return null
 }
 
-async function runWithinGame({ game, gameManager, params, calculateResponse, clientId }) {
-  return await calculateResponse(Object.assign({ game, gameManager, clientId }, params))
+async function runWithinGame({ game, gameManager, params, calculateResponse, clientId, response }) {
+  return await calculateResponse(Object.assign({ game, gameManager, clientId, response }, params))
 }

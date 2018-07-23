@@ -36,13 +36,22 @@ export function buildRecordScoreIntent({ gameManager, domain }) {
   }
 }
 
-async function calculateResponse({ game, score, gameManager, domain, playerName, clientId }) {
+async function calculateResponse({ game, score, gameManager, domain, playerName, clientId, response }) {
+  response.shouldEndSession(false)
+  response.reprompt(`
+    You can add scores or hear the current scores. What would you like to do?`
+  )
   const player = domain.selectPlayerByName(playerName, game)
   if (player) {
-    return await recordScore({ score, player, game, gameManager, domain, clientId })
+    response.say(
+      await recordScore({ score, player, game, gameManager, domain, clientId })
+    )
   }
   else {
-    return `Sorry, I can't find a player called ${playerName} in this game.`
+    response.say(
+      `Sorry, I can't find a player called ${playerName} in this game.
+      Please try again.`
+    )
   }
 }
 
@@ -56,5 +65,5 @@ async function recordScore({ score, player, game, gameManager, domain, clientId 
   await gameManager.addGameEvent(event)
   const updatedGame = await gameManager.getCurrentGameState(game.id)
   const total = domain.selectPlayerTotal(player.id, updatedGame)
-  return `After adding ${score}, ${player.name} now has ${total} points.`
+  return `After adding ${score}, ${player.name} now has ${total} points. Anything else?`
 }

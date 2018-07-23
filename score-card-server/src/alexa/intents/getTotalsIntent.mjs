@@ -34,11 +34,14 @@ export function buildGetTotalsIntent({ gameManager, domain }) {
   }
 }
 
-function calculateResponse({ game, domain }) {
-  return [
-    `The current total scores are`,
-    buildCurrentScoresSentence(game, domain)
-  ].join(' ')
+function calculateResponse({ game, domain, response }) {
+  response.shouldEndSession(true)
+  response.say(
+    [
+      `The current total scores are`,
+      buildCurrentScoresSentence(game, domain)
+    ].join(' ')
+  )
 }
 
 function buildCurrentScoresSentence(game, domain) {

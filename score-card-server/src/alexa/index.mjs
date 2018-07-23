@@ -9,9 +9,13 @@ export function buildAlexaApp({ gameManager }) {
   alexaApp.launch(async (request, response) => {
     const game = await fetchMostRecentGame(request.userId, gameManager)
     if (game) {
-      response.say('Rejoined your game')
+      response.say('Rejoined your game. How can I help?')
+      response.reprompt(`
+        You can add scores or hear the current scores. What would you like to do?`
+      )
     } else {
       response.say('Which game would you like to join?')
+      response.reprompt('Which game would you like to join?')
     }
     response.shouldEndSession(false)
   })

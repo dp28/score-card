@@ -28,19 +28,24 @@ describe('JoinGameIntent', () => {
       return expect(response.shouldEndSession.mock.calls).toEqual([[false]])
     })
 
-    describe('when no id can be build from the input', () => {
+    describe('when no id can be built from the input', () => {
       beforeEach(() => {
         request.slot = () => undefined
       })
 
-      it('should tell the user that the id is wrong', async () => {
+      it('should tell the user that the id is wrong and ask for a real one', async () => {
         await call()
-        return expect(response.asText()).toMatch(/game\W+id/i)
+        return expect(response.asText()).toMatch(/game\W+id.*try again/i)
       })
 
       it('should not try and fetch a game', async () => {
         await call()
         return expect(gameManager.getCurrentGameState.mock.calls.length).toBe(0)
+      })
+
+      it('should reprompt users to join a game', async () => {
+        await call()
+        return expect(response.asRepromptText()).toMatch(/game.*join/i)
       })
     })
 
@@ -61,14 +66,19 @@ describe('JoinGameIntent', () => {
       })
 
       describe('when no game can be found', () => {
-        it('should repeat the id to the user', async () => {
+        it('should repeat the id to the user and ask for a real one', async () => {
           await call()
-          return expect(response.asText()).toMatch(/adjective animal number/)
+          return expect(response.asText()).toMatch(/adjective animal number.*another.*id/i)
         })
 
         it('should not try and save the id in the session', async () => {
           await call()
           return expect(request.getSession.mock.calls.length).toBe(0)
+        })
+
+        it('should reprompt users to join a game', async () => {
+          await call()
+          return expect(response.asRepromptText()).toMatch(/game.*join/i)
         })
       })
 
@@ -116,6 +126,12 @@ describe('JoinGameIntent', () => {
           domain.selectGameName.mockReturnValue('beanie')
           await call()
           return expect(response.asText()).toMatch(/beanie/)
+        })
+
+        it('should ask what to do', async () => {
+          domain.selectGameName.mockReturnValue('beanie')
+          await call()
+          return expect(response.asText()).toMatch(/to do\?/)
         })
 
         describe('if the game does not have a name', () => {
