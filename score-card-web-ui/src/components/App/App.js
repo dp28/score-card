@@ -12,6 +12,7 @@ import { BrowserRouter, Link } from 'react-router-dom'
 
 import { Home } from '../Home/Home'
 import { ConnectedGame } from '../Game/Game'
+import { ConnectedConnectionStatus } from '../ConnectionStatus/ConnectionStatus'
 
 const theme = createMuiTheme({
   palette: {
@@ -32,6 +33,9 @@ const styles = {
   title: {
     display: 'inline-block',
     verticalAlign: 'middle'
+  },
+  spacer: {
+    flexGrow: 1
   },
   logo: {
     display: 'inline-block',
@@ -71,6 +75,8 @@ export const App = ({ hasStarted, classes }) => (
                 Score Card
               </Typography>
             </Link>
+            <div className={classes.spacer} />
+            <ConnectedConnectionStatus />
           </Toolbar>
         </AppBar>
         <Paper className={classes.content}>
