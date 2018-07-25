@@ -13,7 +13,8 @@ const INITIAL_STATE = {
   startedAt: undefined,
   players: {},
   totals: {},
-  rounds: []
+  rounds: [],
+  appliedEventIds: new Set([])
 }
 
 const EventSpecificReducers = {
@@ -27,7 +28,13 @@ const EventSpecificReducers = {
 
 export function gameReducer(game = INITIAL_STATE, event) {
   const eventReducer = EventSpecificReducers[event.type]
-  return eventReducer ? eventReducer(game, event) : game
+  if (!eventReducer || game.appliedEventIds.has(event.id)) {
+    return game
+  }
+  return merge(
+    eventReducer(game, event),
+    { appliedEventIds: new Set([event.id, ...game.appliedEventIds]) }
+  )
 }
 
 function recordScore(game, scoreEvent) {

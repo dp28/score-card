@@ -30,13 +30,13 @@ describe('gameReducer', () => {
 
   describe('calling without any game state', () => {
     it('should return a default unstarted game state', () => {
-      expect(gameReducer(undefined, { type: 'fake' })).toEqual({
+      expect(gameReducer(undefined, { type: 'fake' })).toEqual(expect.objectContaining({
         id: undefined,
         startedAt: undefined,
         players: {},
         totals: {},
         rounds: []
-      })
+      }))
     })
   })
 
@@ -44,21 +44,22 @@ describe('gameReducer', () => {
     it('should have state containing the gameId and startedAt from the event,' +
       ' the passed in name, no players, no totals, no rounds', () => {
       const event = startGame({ gameName: 'test' })
-      expect(gameReducer(undefined, event)).toEqual({
+      expect(gameReducer(undefined, event)).toEqual(expect.objectContaining({
         id: event.gameId,
         startedAt: event.createdAt,
         name: 'test',
         players: {},
         totals: {},
         rounds: []
-      })
+      }))
     })
 
     describe('if there is an existing game already', () => {
-      it('should not change the game', () => {
+      it('should not change the game except from recording the event', () => {
         const { game } = buildStartedGameWithPlayer()
-        const updatedGame = gameReducer(game, startGame())
-        expect(updatedGame).toBe(game)
+        let { appliedEventIds: _omit_1, ...updatedGame } = gameReducer(game, startGame())
+        let { appliedEventIds: _omit_2, ...gameWithoutEventIds } = game
+        expect(updatedGame).toEqual(gameWithoutEventIds)
       })
 
       describe('which has been joined but not started (has no startedAt)', () => {
@@ -66,51 +67,53 @@ describe('gameReducer', () => {
           const game = gameReducer(undefined, joinGame({ gameId: 'bla' }))
           const startEvent = startGame()
           const updatedGame = gameReducer(game, startEvent)
-          expect(updatedGame).toEqual({
+          expect(updatedGame).toEqual(expect.objectContaining({
             id: 'bla',
             startedAt: startEvent.createdAt,
             players: {},
             totals: {},
             rounds: [],
             name: null
-          })
+          }))
         })
 
         it('should add the gameName from the start event', () => {
           const game = gameReducer(undefined, joinGame({ gameId: 'bla' }))
           const startEvent = startGame({ gameName: 'test' })
           const updatedGame = gameReducer(game, startEvent)
-          expect(updatedGame).toEqual({
+          expect(updatedGame).toEqual(expect.objectContaining({
             id: 'bla',
             startedAt: startEvent.createdAt,
             players: {},
             totals: {},
             rounds: [],
             name: 'test'
-          })
+          }))
         })
       })
     })
   })
 
   describe(`calling with a ${JOIN_GAME} event`, () => {
-    it('should have state containing the gameId from the event, but null' +
+    it('should have state containing the gameId from the event, but null ' +
       'startedAt, no players, no totals, no rounds', () => {
       const event = joinGame({ gameId: 'bla' })
-      expect(gameReducer(undefined, event)).toEqual({
+      expect(gameReducer(undefined, event)).toEqual(expect.objectContaining({
         id: event.gameId,
         startedAt: null,
         players: {},
         totals: {},
         rounds: []
-      })
+      }))
     })
 
     describe('if there is an existing game already', () => {
       it('should not change the game', () => {
         const { game } = buildStartedGameWithPlayer()
-        const updatedGame = gameReducer(game, joinGame({ gameId: game.id }))
-        expect(updatedGame).toBe(game)
+        const join = joinGame({ gameId: game.id })
+        let { appliedEventIds: _omit_1, ...updatedGame } = gameReducer(game, join)
+        let { appliedEventIds: _omit_2, ...gameWithoutEventIds } = game
+        expect(updatedGame).toEqual(gameWithoutEventIds)
       })
     })
   })
@@ -186,6 +189,15 @@ describe('gameReducer', () => {
         const { game, player } = buildStartedGameWithScore(10)
         const scoreEvent = recordScore({ score: 12, playerId: player.id, gameId: game.id })
         const updatedGame = gameReducer(game, scoreEvent)
+        expect(updatedGame.totals[player.id]).toEqual(22)
+      })
+    })
+
+    describe(`calling with the exact same ${RECORD_SCORE} event`, () => {
+      it('should only update the total for the player once', () => {
+        const { game, player } = buildStartedGameWithScore(10)
+        const scoreEvent = recordScore({ score: 12, playerId: player.id, gameId: game.id })
+        const updatedGame = [scoreEvent, scoreEvent].reduce(gameReducer, game)
         expect(updatedGame.totals[player.id]).toEqual(22)
       })
     })
