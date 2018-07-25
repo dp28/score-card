@@ -13,8 +13,14 @@ const reducer = buildReducer({ domain: { reducer: mockGameReducer } })
 
 describe('reducer', () => {
   describe('calling without a state and an init event', () => {
-    it('should return an object with a games property', () => {
-      expect(reducer(undefined, INIT_EVENT)).toEqual({ games: {}, ui: { games: {} } })
+    it('should return an object with game and ui state initialised', () => {
+      expect(reducer(undefined, INIT_EVENT)).toEqual({
+        games: {},
+        ui: {
+          connection: { status: 'connecting' },
+          games: {}
+        }
+      })
     })
   })
 

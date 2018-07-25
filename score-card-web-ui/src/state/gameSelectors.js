@@ -4,6 +4,5 @@ export function selectGame(gameId, state) {
 }
 
 export function selectPlayer(playerId, gameId, state) {
-  console.log(state);
   return selectGame(gameId, state).players[playerId]
 }

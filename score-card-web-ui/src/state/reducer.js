@@ -1,6 +1,7 @@
 import { EDITING_GAME_NAME } from '../components/GameName/GameNameActions'
 import { SHARE_GAME } from '../components/ShareButton/ShareButtonActions'
 import { HIDE_SHARING } from '../components/SharingInfo/SharingInfoActions'
+import { connectionReducer } from '../communication/connectionReducer'
 
 const INITITAL_STATE = { games: {}, ui: { games: {} } }
 
@@ -34,7 +35,10 @@ function uiReducer(state, event, domain) {
       }
     }
   }
-  return state
+  return {
+    ...state,
+    connection: connectionReducer(state.connection, event)
+  }
 }
 
 function uiGameReducer(game, event, { CHANGE_NAME }) {
