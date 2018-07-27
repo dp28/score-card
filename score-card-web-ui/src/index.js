@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 
 import './index.css'
 import { ConnectedApp } from './components/App/App'
-// import registerServiceWorker from './registerServiceWorker'
+import registerServiceWorker from './registerServiceWorker'
 import { store } from './state/store'
 import { dispatchEventsFromPathState } from './communication/urlEventSource'
 
@@ -15,7 +15,7 @@ ReactDOM.render(
   document.getElementById('root')
 )
 
-// registerServiceWorker()
+registerServiceWorker()
 
 const dispatch = store.dispatch.bind(store)
 
