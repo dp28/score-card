@@ -1,4 +1,4 @@
-import { joinGame } from '../score-card-domain'
+import { joinGame } from '../domainEvents'
 
 export function dispatchEventsFromPathState(dispatch, path) {
   const pathParts = path.split('/')

@@ -1,9 +1,11 @@
 import { createStore, applyMiddleware, compose } from 'redux'
-import * as domain from '../score-card-domain'
+import storage from 'localforage'
 
+import * as domain from '../score-card-domain'
 import { buildReducer } from './reducer'
 import { websocketURL } from '../config.json'
 import { ServerConnection } from '../communication/serverConnection'
+import { persistStateMiddleware } from './persistState'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -18,5 +20,8 @@ function communicationMiddleware(store) {
 }
 
 export const store = createStore(buildReducer({ domain }), composeEnhancers(
-  applyMiddleware(communicationMiddleware)
+  applyMiddleware(
+    persistStateMiddleware({ domain, storage }),
+    communicationMiddleware
+  )
 ));

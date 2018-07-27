@@ -10,7 +10,8 @@ import {
   joinGame,
   JOIN_GAME,
   changeName,
-  CHANGE_NAME
+  CHANGE_NAME,
+  isEqualJoinGameEvent
 } from './gameEvents'
 
 function itShouldBehaveLikeAGameEvent({ eventCreator, type, data }) {
@@ -166,5 +167,41 @@ describe('changeName', () => {
 
   it('should include the name of the game if one was given', () => {
     expect(changeName({ gameName: 'My game'}).gameName).toEqual('My game')
+  })
+})
+
+describe('isEqualJoinGameEvent', () => {
+  function expectToNotBeEqual(first, second) {
+    expect(isEqualJoinGameEvent(first, second)).toBe(false)
+  }
+
+  describe(`if the first event is not a ${JOIN_GAME} event`, () => {
+    it('should return false', () => {
+      expectToNotBeEqual(startGame(), joinGame({ gameId: '' }))
+    })
+  })
+
+  describe(`if the second event is not a ${JOIN_GAME} event`, () => {
+    it('should return false', () => {
+      expectToNotBeEqual(joinGame({ gameId: '' }), startGame())
+    })
+  })
+
+  describe('if their clientIds are different but gameIds are the same', () => {
+    it('should return false', () => {
+      expectToNotBeEqual(
+        joinGame({ gameId: 'same', clientId: 'different' }),
+        joinGame({ gameId: 'same', clientId: 'DIFFERENT' })
+      )
+    })
+  })
+
+  describe('if their clientIds are the same and gameIds are the same', () => {
+    it('should return true', () => {
+      expect(isEqualJoinGameEvent(
+        joinGame({ clientId: 'same', gameId: 'not_different' }),
+        joinGame({ clientId: 'same', gameId: 'not_different' })
+      )).toBe(true)
+    })
   })
 })

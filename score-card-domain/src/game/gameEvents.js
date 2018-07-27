@@ -25,6 +25,15 @@ export const changeName = gameEventCreator(CHANGE_NAME, pick('gameName'))
 export const recordScore = gameEventCreator(RECORD_SCORE, pick('playerId', 'score'))
 export const removePlayer = gameEventCreator(REMOVE_PLAYER, pick('playerId'))
 
+export function isEqualJoinGameEvent(firstEvent, secondEvent) {
+  return (
+    firstEvent.type === JOIN_GAME &&
+    secondEvent.type === JOIN_GAME &&
+    firstEvent.clientId === secondEvent.clientId &&
+    firstEvent.gameId === secondEvent.gameId
+  )
+}
+
 function gameEventCreator(type, createDetails = () => ({})) {
   return input => merge(
     createDetails(input),
